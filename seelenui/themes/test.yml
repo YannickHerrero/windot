@@ -1,0 +1,73 @@
+id: '@yherrero/transparent'
+metadata:
+  displayName:
+    en: Transparent 2
+  description:
+    en: A transparent toolbar theme.
+  tags:
+    - toolbar
+styles:
+  '@seelen/fancy-toolbar': |
+    .ft-bar {
+      padding-left: 36px;
+    }
+    .ft-bar-bg-layer-1 {
+      display: none;
+    }
+
+    .ft-bar-bg-layer-2 {
+      background-color: transparent;
+    }
+
+    .ft-bar-item {
+      background-color: transparent;
+    }
+
+    .notifications {
+      .bg-layer-1 {
+        opacity: 0.9;
+      }
+
+      .bg-layer-2 {
+        opacity: 0.90;
+      }
+    }
+
+    .calendar-container {
+      .bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
+    
+    .tray {
+      .tray-bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
+
+
+
+    .wlan-selector {
+      .wlan-selector-bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
+
+    .media-control {
+      .bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
+    
+    .fast-settings {
+      .fast-settings-bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
+
+    .ft-bar-item-context-menu-container,
+    .tb-context-menu-container {
+      .bg-layer-1 {
+        background-color: rgba(20, 20, 20, 0.9);
+      }
+    }
