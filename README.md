@@ -61,6 +61,7 @@ Quick access launcher for web apps in Chrome app mode:
 
 ### Prerequisites
 - Windows 11 (for best compatibility)
+- WSL2 with Ubuntu (for file editing and git operations)
 - [GlazeWM](https://github.com/glzr-io/glazewm)
 - [Zebar](https://github.com/glzr-io/zebar)
 - [WezTerm](https://wezfurlong.org/wezterm/)
@@ -69,25 +70,25 @@ Quick access launcher for web apps in Chrome app mode:
 
 ### Setup
 
-1. **Clone this repository:**
-   ```powershell
-   git clone <your-repo-url> C:\Users\<username>\windot
+1. **Clone this repository (from WSL):**
+   ```bash
+   git clone <your-repo-url> /mnt/c/Users/<username>/windot
    ```
 
 2. **Copy configurations to their active locations:**
 
-   ```powershell
+   ```bash
    # GlazeWM config
-   Copy-Item -Recurse windot/glazewm/* $env:USERPROFILE/.glzr/glazewm/
+   cp -r windot/glazewm/* /mnt/c/Users/<username>/.glzr/glazewm/
 
    # Zebar config (if using custom, otherwise use marketplace)
    # Active config is in AppData/Roaming/zebar/downloads/glzr-io.starter@0.0.0/
 
    # WezTerm config
-   Copy-Item windot/wezterm.lua $env:USERPROFILE/.wezterm.lua
+   cp windot/wezterm.lua /mnt/c/Users/<username>/.wezterm.lua
 
    # Scripts
-   Copy-Item -Recurse windot/scripts/* $env:USERPROFILE/scripts/
+   cp -r windot/scripts/* /mnt/c/Users/<username>/scripts/
    ```
 
 3. **Reload GlazeWM:**
@@ -95,13 +96,13 @@ Quick access launcher for web apps in Chrome app mode:
 
 ## 🔄 Updating Configs
 
-Since this repo uses manual copies (no symlinks), after making changes:
+Since this repo uses manual copies (no symlinks), after making changes in WSL:
 
-```powershell
+```bash
 # Update from active locations to repo
-Copy-Item $env:USERPROFILE/.glzr/glazewm/config.yaml windot/glazewm/
-Copy-Item $env:USERPROFILE/.wezterm.lua windot/wezterm.lua
-Copy-Item $env:USERPROFILE/scripts/* windot/scripts/
+cp /mnt/c/Users/<username>/.glzr/glazewm/config.yaml windot/glazewm/
+cp /mnt/c/Users/<username>/.wezterm.lua windot/wezterm.lua
+cp /mnt/c/Users/<username>/scripts/* windot/scripts/
 
 # Commit changes
 cd windot
@@ -135,11 +136,12 @@ Edit `zebar/styles.css` for styling and `zebar/zpack.json` for positioning.
 
 ## 📝 Notes
 
-- **Active Zebar config** is downloaded from marketplace to `AppData/Roaming/zebar/downloads/`
-- **Scripts location** is `C:/Users/<username>/scripts/`
-- **GlazeWM config** is in `C:/Users/<username>/.glzr/glazewm/`
-- **WezTerm config** is in `C:/Users/<username>/.wezterm.lua`
+- **Active Zebar config** is downloaded from marketplace to `/mnt/c/Users/<username>/AppData/Roaming/zebar/downloads/`
+- **Scripts location** is `/mnt/c/Users/<username>/scripts/`
+- **GlazeWM config** is in `/mnt/c/Users/<username>/.glzr/glazewm/`
+- **WezTerm config** is in `/mnt/c/Users/<username>/.wezterm.lua`
 - This repo contains **manual copies** for version control - changes to active configs must be manually synced
+- **Edited from WSL** - all paths use `/mnt/c/` prefix to access Windows files
 
 ## 🔗 Useful Links
 
