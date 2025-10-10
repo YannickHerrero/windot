@@ -4,7 +4,8 @@ general:
   # Example: The below command launches Zebar.
   startup_commands: [
     'shell-exec zebar',
-    'shell-exec C:/Users/yannick.herrero/scripts/website-launcher.ahk'
+    'shell-exec C:/Users/yannick.herrero/scripts/website-launcher.ahk',
+    'shell-exec C:/Users/yannick.herrero/scripts/terminal-launcher.ahk'
   ]
 
   # Commands to run just before the WM is shutdown.
@@ -153,8 +154,9 @@ window_rules:
       - window_process: { equals: 'Microsoft.CmdPal.UI' }
       - window_process: { equals: 'Lively' }
         window_class: { regex: 'HwndWrapper' }
-      # AutoHotkey website launcher
+      # AutoHotkey launchers
       - window_title: { equals: 'Website Launcher' }
+      - window_title: { equals: 'Terminal Launcher' }
       # Teams call windows
       #- window_process: { equals: 'ms-teams' }
       #  window_title: { regex: '.*Call.*|.*Meeting.*' }
