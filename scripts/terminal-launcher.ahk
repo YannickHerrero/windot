@@ -1,11 +1,12 @@
 ; Terminal Launcher - Quick access to project folders in WezTerm
-; Press Alt+Shift+Enter to open launcher
+; Press Alt+Enter to open launcher
 
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; Configuration - Add your project folders here (sorted by displayPath length)
 global folders := [
+    {name: "Home", path: "\\wsl.localhost\Ubuntu\home\yannick", displayPath: "~/"},
     {name: "Notes", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\notes", displayPath: "~/dev/notes"},
     {name: "Dev Environment", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\dev-env", displayPath: "~/dev/dev-env"},
     {name: "Dotfiles", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\dotfiles", displayPath: "~/dev/dotfiles"},
@@ -17,7 +18,7 @@ global folders := [
     {name: "Portail GED", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\portail-ged", displayPath: "~/dev/portail-ged"},
     {name: "Idisko Jamendo", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\idisko-jamendo", displayPath: "~/dev/idisko-jamendo"},
     {name: "UXCO Portail Locataire", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\uxco-portail-locataire", displayPath: "~/dev/uxco-portail-locataire"},
-    {name: "Home", path: "C:\Users\yannick.herrero", displayPath: "/mnt/c/Users/yannick.herrero"},
+    {name: "Windows Home", path: "C:\Users\yannick.herrero", displayPath: "/mnt/c/Users/yannick.herrero"},
     {name: "Domofinance iOS", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\domofinance-domosimu-ios", displayPath: "~/dev/domofinance-domosimu-ios"},
     {name: "UXCO Ansible", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\uxco-portail-locataire-ansible", displayPath: "~/dev/uxco-portail-locataire-ansible"},
     {name: "Windot", path: "C:\Users\yannick.herrero\windot", displayPath: "/mnt/c/Users/yannick.herrero/windot"},
@@ -32,8 +33,8 @@ global searchBox := ""
 global listView := ""
 global filteredFolders := []
 
-; Hotkey to toggle launcher (Alt+Shift+Enter)
-!+Enter::ToggleLauncher()
+; Hotkey to toggle launcher (Alt+Enter)
+!Enter::ToggleLauncher()
 
 ; Function to show/hide launcher
 ToggleLauncher() {

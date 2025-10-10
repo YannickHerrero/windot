@@ -272,7 +272,7 @@ keybindings:
   # `shell-exec %ProgramFiles%/Git/git-bash.exe` to start Windows
   # Terminal and Git Bash respectively.
   - commands: ['shell-exec C:/Program Files/WezTerm/wezterm-gui.exe']
-    bindings: ['alt+enter']
+    bindings: ['alt+shift+enter']
 
   # Launch Chrome.
   - commands: ['shell-exec chrome']
