@@ -4,24 +4,71 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Configuration - Add your websites here
-global websites := Map(
-    "n", {name: "Nicoka", url: "https://acelys.nicoka.com"},
-    "j", {name: "Jira", url: "https://acelys.atlassian.net/jira/for-you"},
-    "b", {name: "Bitbucket", url: "https://bitbucket.org/acelys_sn/workspace/overview/"},
-    "k", {name: "Keymap Editor", url: "https://nickcoutsos.github.io/keymap-editor/"},
-    "m", {name: "Gmail", url: "https://mail.google.com/mail/u/3/#inbox"},
-    "p", {name: "ProtonMail", url: "https://mail.proton.me/u/0/inbox"},
-    "c", {name: "Claude", url: "https://www.claude.ai"},
-    "g", {name: "GitHub", url: "https://github.com/YannickHerrero"},
-    "o", {name: "Outlook", url: "https://outlook.office.com/mail/0/"},
-    "f", {name: "Figma", url: "https://www.figma.com/files/team/"},
-    "e", {name: "Expo", url: "https://expo.dev/accounts/yannick_h"}
-)
+; Get script directory for config files
+global scriptDir := A_ScriptDir
 
 ; Global variables
+global websites := Map()
+global config := Map()
 global launcherGui := ""
 global isVisible := false
+
+; Load configuration
+LoadConfig()
+
+; Load configuration from files
+LoadConfig() {
+    global scriptDir, websites, config
+
+    ; Load INI config
+    configFile := scriptDir . "\config.ini"
+    if (!FileExist(configFile)) {
+        MsgBox("Config file not found: " configFile, "Error", "Icon!")
+        ExitApp()
+    }
+
+    ; Read INI settings
+    config["theme"] := Map(
+        "background", IniRead(configFile, "Theme", "background", "1e1e2e"),
+        "primary", IniRead(configFile, "Theme", "primary", "ff79c6"),
+        "accent", IniRead(configFile, "Theme", "accent", "89b4fa"),
+        "text", IniRead(configFile, "Theme", "text", "b4befe"),
+        "muted", IniRead(configFile, "Theme", "muted", "6c7086"),
+        "border", IniRead(configFile, "Theme", "border", "45475a")
+    )
+
+    config["gui"] := Map(
+        "font", IniRead(configFile, "GUI", "font", "Segoe UI"),
+        "fontSize", IniRead(configFile, "GUI", "fontSize", "11"),
+        "titleSize", IniRead(configFile, "GUI", "titleSize", "13")
+    )
+
+    config["browserExe"] := IniRead(configFile, "Browser", "executable", "")
+
+    ; Load websites from INI
+    websitesFile := scriptDir . "\websites.ini"
+    if (!FileExist(websitesFile)) {
+        MsgBox("Websites config not found: " websitesFile, "Error", "Icon!")
+        ExitApp()
+    }
+
+    ; Read all sections (keys) from INI file
+    sections := IniRead(websitesFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            name := IniRead(websitesFile, section, "name", "")
+            url := IniRead(websitesFile, section, "url", "")
+
+            if (name != "" && url != "") {
+                websites[section] := {
+                    name: name,
+                    url: url
+                }
+            }
+        }
+    }
+}
 
 ; Hotkey to toggle launcher (Alt+Space)
 !Space::ToggleLauncher()
@@ -38,35 +85,47 @@ ToggleLauncher() {
 
 ; Show the launcher
 ShowLauncher() {
-    global launcherGui, isVisible, websites
+    global launcherGui, isVisible, websites, config
 
     ; Create GUI if it doesn't exist
     if (!launcherGui) {
+        ; Get theme colors
+        bg := config["theme"]["background"]
+        primary := config["theme"]["primary"]
+        accent := config["theme"]["accent"]
+        txt := config["theme"]["text"]
+        muted := config["theme"]["muted"]
+
+        ; Get font settings
+        font := config["gui"]["font"]
+        fontSize := config["gui"]["fontSize"]
+        titleSize := config["gui"]["titleSize"]
+
         launcherGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Website Launcher")
-        launcherGui.BackColor := "1e1e2e"
-        launcherGui.SetFont("s11 c89b4fa", "Segoe UI")
+        launcherGui.BackColor := bg
+        launcherGui.SetFont("s" fontSize " c" accent, font)
 
         ; Add title
-        launcherGui.SetFont("s13 Bold cff79c6", "Segoe UI")
+        launcherGui.SetFont("s" titleSize " Bold c" primary, font)
         launcherGui.Add("Text", "x20 y15 w360 Center", "Quick Launch")
 
         ; Add instructions
-        launcherGui.SetFont("s9 c6c7086", "Segoe UI")
+        launcherGui.SetFont("s9 c" muted, font)
         launcherGui.Add("Text", "x20 y45 w360 Center", "Press a key to launch • ESC to close")
 
         ; Add separator
-        launcherGui.Add("Text", "x20 y70 w360 h1 Background89b4fa")
+        launcherGui.Add("Text", "x20 y70 w360 h1 Background" accent)
 
         ; Add website list
-        launcherGui.SetFont("s11 cb4befe", "Segoe UI")
+        launcherGui.SetFont("s" fontSize " c" txt, font)
         yPos := 90
         for key, site in websites {
             ; Key letter
-            launcherGui.SetFont("s11 Bold cff79c6", "Segoe UI")
+            launcherGui.SetFont("s" fontSize " Bold c" primary, font)
             launcherGui.Add("Text", "x40 y" yPos " w30", StrUpper(key))
 
             ; Website name
-            launcherGui.SetFont("s11 cb4befe", "Segoe UI")
+            launcherGui.SetFont("s" fontSize " c" txt, font)
             launcherGui.Add("Text", "x80 y" yPos " w300", site.name)
 
             yPos += 35
@@ -104,30 +163,45 @@ HideLauncher() {
 
 ; Launch website in Chrome app mode
 LaunchWebsite(url, *) {
+    global config
+
     ; Hide launcher first
     HideLauncher()
 
-    ; Find Chrome executable using common paths
-    chromePaths := [
-        EnvGet("ProgramFiles") . "\Google\Chrome\Application\chrome.exe",
-        EnvGet("ProgramFiles(x86)") . "\Google\Chrome\Application\chrome.exe",
-        EnvGet("LocalAppData") . "\Google\Chrome\Application\chrome.exe"
-    ]
+    ; Get Chrome executable path
+    chromeExe := config["browserExe"]
 
-    chromeExe := ""
-    for path in chromePaths {
-        if (FileExist(path)) {
-            chromeExe := path
-            break
+    ; If not in config, auto-detect
+    if (chromeExe == "" || !FileExist(chromeExe)) {
+        browserPaths := [
+            ; Chrome (prioritized)
+            EnvGet("ProgramFiles") . "\Google\Chrome\Application\chrome.exe",
+            EnvGet("ProgramFiles(x86)") . "\Google\Chrome\Application\chrome.exe",
+            EnvGet("LocalAppData") . "\Google\Chrome\Application\chrome.exe",
+            ; Vivaldi
+            EnvGet("LocalAppData") . "\Vivaldi\Application\vivaldi.exe",
+            ; Brave
+            EnvGet("ProgramFiles") . "\BraveSoftware\Brave-Browser\Application\brave.exe",
+            EnvGet("LocalAppData") . "\BraveSoftware\Brave-Browser\Application\brave.exe",
+            ; Edge
+            EnvGet("ProgramFiles(x86)") . "\Microsoft\Edge\Application\msedge.exe"
+        ]
+
+        chromeExe := ""
+        for path in browserPaths {
+            if (FileExist(path)) {
+                chromeExe := path
+                break
+            }
         }
     }
 
-    if (!chromeExe) {
-        MsgBox("Google Chrome not found!", "Error", "Icon!")
+    if (!chromeExe || !FileExist(chromeExe)) {
+        MsgBox("No Chromium-based browser found! Please set the path in config.ini", "Error", "Icon!")
         return
     }
 
-    ; Launch Chrome in app mode
+    ; Launch browser in app mode
     Run('"' chromeExe '" --app="' url '"')
 }
 
