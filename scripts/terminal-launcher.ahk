@@ -4,34 +4,75 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Configuration - Add your project folders here (sorted by displayPath length)
-global folders := [
-    {name: "Home", path: "\\wsl.localhost\Ubuntu\home\yannick", displayPath: "~/"},
-    {name: "Notes", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\notes", displayPath: "~/dev/notes"},
-    {name: "Dev Environment", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\dev-env", displayPath: "~/dev/dev-env"},
-    {name: "Dotfiles", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\dotfiles", displayPath: "~/dev/dotfiles"},
-    {name: "Omarchy", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\omarchy", displayPath: "~/dev/omarchy"},
-    {name: "Test MSAL", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\test-msal", displayPath: "~/dev/test-msal"},
-    {name: "Chocofi ZMK", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\chocofi-zmk", displayPath: "~/dev/chocofi-zmk"},
-    {name: "Idisko App", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\idisko-app", displayPath: "~/dev/idisko-app"},
-    {name: "Idisko Next", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\idisko_next", displayPath: "~/dev/idisko_next"},
-    {name: "Portail GED", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\portail-ged", displayPath: "~/dev/portail-ged"},
-    {name: "Idisko Jamendo", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\idisko-jamendo", displayPath: "~/dev/idisko-jamendo"},
-    {name: "UXCO Portail Locataire", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\uxco-portail-locataire", displayPath: "~/dev/uxco-portail-locataire"},
-    {name: "Windows Home", path: "C:\Users\yannick.herrero", displayPath: "/mnt/c/Users/yannick.herrero"},
-    {name: "Domofinance iOS", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\domofinance-domosimu-ios", displayPath: "~/dev/domofinance-domosimu-ios"},
-    {name: "UXCO Ansible", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\uxco-portail-locataire-ansible", displayPath: "~/dev/uxco-portail-locataire-ansible"},
-    {name: "Windot", path: "C:\Users\yannick.herrero\windot", displayPath: "/mnt/c/Users/yannick.herrero/windot"},
-    {name: "Scripts", path: "C:\Users\yannick.herrero\scripts", displayPath: "/mnt/c/Users/yannick.herrero/scripts"},
-    {name: "Domofinance RN", path: "\\wsl.localhost\Ubuntu\home\yannick\dev\domofinance-domosimu-react-native", displayPath: "~/dev/domofinance-domosimu-react-native"},
-]
+; Get script directory for config files
+global scriptDir := A_ScriptDir
 
 ; Global variables
+global folders := []
+global config := Map()
 global launcherGui := ""
 global isVisible := false
 global searchBox := ""
 global listView := ""
 global filteredFolders := []
+
+; Load configuration
+LoadConfig()
+
+; Load configuration from files
+LoadConfig() {
+    global scriptDir, folders, config
+
+    ; Load INI config
+    configFile := scriptDir . "\config.ini"
+    if (!FileExist(configFile)) {
+        MsgBox("Config file not found: " configFile, "Error", "Icon!")
+        ExitApp()
+    }
+
+    ; Read INI settings
+    config["theme"] := Map(
+        "background", IniRead(configFile, "Theme", "background", "1e1e2e"),
+        "primary", IniRead(configFile, "Theme", "primary", "ff79c6"),
+        "accent", IniRead(configFile, "Theme", "accent", "89b4fa"),
+        "text", IniRead(configFile, "Theme", "text", "b4befe"),
+        "muted", IniRead(configFile, "Theme", "muted", "6c7086"),
+        "border", IniRead(configFile, "Theme", "border", "45475a")
+    )
+
+    config["gui"] := Map(
+        "font", IniRead(configFile, "GUI", "font", "Segoe UI"),
+        "fontSize", IniRead(configFile, "GUI", "fontSize", "11"),
+        "titleSize", IniRead(configFile, "GUI", "titleSize", "13")
+    )
+
+    config["terminalExe"] := IniRead(configFile, "Terminal", "executable", "")
+
+    ; Load folders from INI
+    foldersFile := scriptDir . "\folders.ini"
+    if (!FileExist(foldersFile)) {
+        MsgBox("Folders config not found: " foldersFile, "Error", "Icon!")
+        ExitApp()
+    }
+
+    ; Read all sections (folder names) from INI file
+    sections := IniRead(foldersFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            path := IniRead(foldersFile, section, "path", "")
+            displayPath := IniRead(foldersFile, section, "displayPath", "")
+
+            if (path != "" && displayPath != "") {
+                folders.Push({
+                    name: section,
+                    path: path,
+                    displayPath: displayPath
+                })
+            }
+        }
+    }
+}
 
 ; Hotkey to toggle launcher (Alt+Enter)
 !Enter::ToggleLauncher()
@@ -48,36 +89,49 @@ ToggleLauncher() {
 
 ; Show the launcher
 ShowLauncher() {
-    global launcherGui, isVisible, searchBox, listView, folders
+    global launcherGui, isVisible, searchBox, listView, folders, config
 
     ; Create GUI if it doesn't exist
     if (!launcherGui) {
+        ; Get theme colors
+        bg := config["theme"]["background"]
+        primary := config["theme"]["primary"]
+        accent := config["theme"]["accent"]
+        txt := config["theme"]["text"]
+        muted := config["theme"]["muted"]
+        border := config["theme"]["border"]
+
+        ; Get font settings
+        font := config["gui"]["font"]
+        fontSize := config["gui"]["fontSize"]
+        titleSize := config["gui"]["titleSize"]
+
         launcherGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Terminal Launcher")
-        launcherGui.BackColor := "1e1e2e"
-        launcherGui.SetFont("s11 cb4befe", "Segoe UI")
+        launcherGui.BackColor := bg
+        launcherGui.SetFont("s" fontSize " c" txt, font)
 
         ; Add title
-        launcherGui.SetFont("s13 Bold cff79c6", "Segoe UI")
+        launcherGui.SetFont("s" titleSize " Bold c" primary, font)
         launcherGui.Add("Text", "x20 y15 w460 Center", "Terminal Launcher")
 
         ; Add instructions
-        launcherGui.SetFont("s9 c6c7086", "Segoe UI")
+        launcherGui.SetFont("s9 c" muted, font)
         launcherGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
 
         ; Add separator
-        launcherGui.Add("Text", "x20 y70 w460 h1 Background89b4fa")
+        launcherGui.Add("Text", "x20 y70 w460 h1 Background" accent)
 
         ; Add search box
-        launcherGui.SetFont("s11 cb4befe", "Segoe UI")
-        searchBox := launcherGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background1e1e2e cb4befe")
+        launcherGui.SetFont("s" fontSize " c" txt, font)
+        searchBox := launcherGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
         searchBox.OnEvent("Change", (*) => FilterFolders())
 
         ; Add bottom border for search box
-        launcherGui.Add("Text", "x20 y116 w460 h1 Background45475a")
+        launcherGui.Add("Text", "x20 y116 w460 h1 Background" border)
 
         ; Add list view with custom colors
-        launcherGui.SetFont("s11 cb4befe", "Segoe UI")
-        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background1e1e2e cb4befe", ["Name", "Path"])
+        launcherGui.SetFont("s" fontSize " c" txt, font)
+        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name", "Path"])
         listView.OnEvent("DoubleClick", (*) => LaunchTerminal())
 
         ; Populate initial list
@@ -184,7 +238,7 @@ MoveSelection(direction) {
 
 ; Launch terminal with selected folder
 LaunchTerminal() {
-    global listView, filteredFolders
+    global listView, filteredFolders, config
 
     selectedRow := listView.GetNext()
     if (selectedRow == 0) {
@@ -195,21 +249,26 @@ LaunchTerminal() {
     if (selectedRow <= filteredFolders.Length) {
         folder := filteredFolders[selectedRow]
 
-        ; Find WezTerm executable
-        weztermPaths := [
-            EnvGet("ProgramFiles") . "\WezTerm\wezterm-gui.exe",
-            EnvGet("LocalAppData") . "\Programs\WezTerm\wezterm-gui.exe"
-        ]
+        ; Get WezTerm executable path
+        weztermExe := config["terminalExe"]
 
-        weztermExe := ""
-        for path in weztermPaths {
-            if (FileExist(path)) {
-                weztermExe := path
-                break
+        ; If not in config, auto-detect
+        if (weztermExe == "" || !FileExist(weztermExe)) {
+            weztermPaths := [
+                EnvGet("ProgramFiles") . "\WezTerm\wezterm-gui.exe",
+                EnvGet("LocalAppData") . "\Programs\WezTerm\wezterm-gui.exe"
+            ]
+
+            weztermExe := ""
+            for path in weztermPaths {
+                if (FileExist(path)) {
+                    weztermExe := path
+                    break
+                }
             }
         }
 
-        if (!weztermExe) {
+        if (!weztermExe || !FileExist(weztermExe)) {
             MsgBox("WezTerm not found!", "Error", "Icon!")
             return
         }

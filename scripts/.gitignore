@@ -1,0 +1,4 @@
+# Personal config files with private data
+*.local.ini
+folders.local.ini
+websites.local.ini
