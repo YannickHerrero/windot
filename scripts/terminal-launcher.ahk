@@ -72,6 +72,17 @@ LoadConfig() {
             }
         }
     }
+
+    ; Dynamically scan dev folder and add all subdirectories
+    devPath := "\\wsl.localhost\Ubuntu\home\username\dev"
+    Loop Files, devPath . "\*", "D" {
+        folderName := A_LoopFileName
+        folders.Push({
+            name: folderName,
+            path: devPath . "\" . folderName,
+            displayPath: "~/dev/" . folderName
+        })
+    }
 }
 
 ; Hotkey to toggle launcher (Alt+Enter)
