@@ -74,7 +74,7 @@ LoadConfig() {
     }
 
     ; Dynamically scan dev folder and add all subdirectories
-    devPath := "\\wsl.localhost\Ubuntu\home\username\dev"
+    devPath := "\\wsl.localhost\Ubuntu\home\yannick\dev"
     Loop Files, devPath . "\*", "D" {
         folderName := A_LoopFileName
         folders.Push({

@@ -1,4 +1,4 @@
-; Website Launcher - Quick access to web apps in Chrome app mode
+; Website Launcher - Quick access to web apps with fuzzy find
 ; Press Alt+Space to open launcher
 
 #Requires AutoHotkey v2.0
@@ -8,10 +8,13 @@
 global scriptDir := A_ScriptDir
 
 ; Global variables
-global websites := Map()
+global websites := []
+global filteredWebsites := []
 global config := Map()
 global launcherGui := ""
 global isVisible := false
+global searchBox := ""
+global listView := ""
 
 ; Load configuration
 LoadConfig()
@@ -61,13 +64,37 @@ LoadConfig() {
             url := IniRead(websitesFile, section, "url", "")
 
             if (name != "" && url != "") {
-                websites[section] := {
+                websites.Push({
                     name: name,
-                    url: url
-                }
+                    displayName: name,
+                    url: url,
+                    type: "chrome"
+                })
             }
         }
     }
+
+    ; Scan Firefox Web Apps folder
+    firefoxAppsPath := "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps"
+    if (DirExist(firefoxAppsPath)) {
+        Loop Files, firefoxAppsPath . "\*.lnk" {
+            appName := RegExReplace(A_LoopFileName, "\.lnk$", "")
+            websites.Push({
+                name: appName,
+                displayName: "[FF] " . appName,
+                url: A_LoopFilePath,
+                type: "firefox"
+            })
+        }
+    }
+
+    ; Add clipboard entry as searchable item
+    websites.Push({
+        name: "Paste from Clipboard",
+        displayName: "[📋] Paste from Clipboard",
+        url: "",
+        type: "clipboard"
+    })
 }
 
 ; Hotkey to toggle launcher (Alt+Space)
@@ -85,7 +112,7 @@ ToggleLauncher() {
 
 ; Show the launcher
 ShowLauncher() {
-    global launcherGui, isVisible, websites, config
+    global launcherGui, isVisible, searchBox, listView, websites, config
 
     ; Create GUI if it doesn't exist
     if (!launcherGui) {
@@ -95,6 +122,7 @@ ShowLauncher() {
         accent := config["theme"]["accent"]
         txt := config["theme"]["text"]
         muted := config["theme"]["muted"]
+        border := config["theme"]["border"]
 
         ; Get font settings
         font := config["gui"]["font"]
@@ -103,51 +131,57 @@ ShowLauncher() {
 
         launcherGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Website Launcher")
         launcherGui.BackColor := bg
-        launcherGui.SetFont("s" fontSize " c" accent, font)
+        launcherGui.SetFont("s" fontSize " c" txt, font)
 
         ; Add title
         launcherGui.SetFont("s" titleSize " Bold c" primary, font)
-        launcherGui.Add("Text", "x20 y15 w360 Center", "Quick Launch")
+        launcherGui.Add("Text", "x20 y15 w460 Center", "Quick Launch")
 
         ; Add instructions
         launcherGui.SetFont("s9 c" muted, font)
-        launcherGui.Add("Text", "x20 y45 w360 Center", "Press a key to launch • ESC to close")
+        launcherGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
 
         ; Add separator
-        launcherGui.Add("Text", "x20 y70 w360 h1 Background" accent)
+        launcherGui.Add("Text", "x20 y70 w460 h1 Background" accent)
 
-        ; Add website list
+        ; Add search box
         launcherGui.SetFont("s" fontSize " c" txt, font)
-        yPos := 90
-        for key, site in websites {
-            ; Key letter
-            launcherGui.SetFont("s" fontSize " Bold c" primary, font)
-            launcherGui.Add("Text", "x40 y" yPos " w30", StrUpper(key))
+        searchBox := launcherGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
+        searchBox.OnEvent("Change", (*) => FilterWebsites())
 
-            ; Website name
-            launcherGui.SetFont("s" fontSize " c" txt, font)
-            launcherGui.Add("Text", "x80 y" yPos " w300", site.name)
+        ; Add bottom border for search box
+        launcherGui.Add("Text", "x20 y116 w460 h1 Background" border)
 
-            yPos += 35
-        }
+        ; Add list view with custom colors
+        launcherGui.SetFont("s" fontSize " c" txt, font)
+        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
+        listView.OnEvent("DoubleClick", (*) => LaunchSelected())
 
-        ; Handle keyboard input
+        ; Populate initial list
+        PopulateList()
+
+        ; Handle keyboard shortcuts
         launcherGui.OnEvent("Escape", (*) => HideLauncher())
 
-        ; Center the window
-        launcherGui.Show("w400 h" (yPos + 20) " Hide")
+        ; Set column width
+        listView.ModifyCol(1, 440)
 
-        ; Set up hotkeys for each website (only once, when GUI is created)
-        for key, site in websites {
-            HotIfWinActive("ahk_id " launcherGui.Hwnd)
-            Hotkey(key, LaunchWebsite.Bind(site.url), "On")
-        }
-        HotIfWinActive()  ; Reset context
+        ; Set up context-sensitive hotkeys
+        HotIfWinActive("ahk_id " launcherGui.Hwnd)
+        Hotkey("Enter", (*) => LaunchSelected(), "On")
+        Hotkey("Down", (*) => MoveSelection(1), "On")
+        Hotkey("Up", (*) => MoveSelection(-1), "On")
+        HotIfWinActive()
     }
+
+    ; Reset search and refresh list
+    searchBox.Value := ""
+    PopulateList()
 
     ; Center and show
     CenterWindow(launcherGui)
-    launcherGui.Show()  ; Activate the window so hotkeys work
+    launcherGui.Show()
+    searchBox.Focus()
     isVisible := true
 }
 
@@ -161,12 +195,100 @@ HideLauncher() {
     }
 }
 
-; Launch website in Chrome app mode
-LaunchWebsite(url, *) {
-    global config
+; Populate list with websites
+PopulateList(filter := "") {
+    global listView, websites, filteredWebsites
 
-    ; Hide launcher first
-    HideLauncher()
+    listView.Delete()
+    filteredWebsites := []
+
+    for site in websites {
+        ; Fuzzy match filter (name only)
+        if (filter == "" || FuzzyMatch(site.name, filter)) {
+            listView.Add("", site.displayName)
+            filteredWebsites.Push(site)
+        }
+    }
+
+    ; Select first item if available
+    if (listView.GetCount() > 0) {
+        listView.Modify(1, "Select Focus")
+    }
+}
+
+; Simple fuzzy matching
+FuzzyMatch(text, pattern) {
+    text := StrLower(text)
+    pattern := StrLower(pattern)
+
+    textPos := 1
+    for charIndex, char in StrSplit(pattern) {
+        textPos := InStr(text, char, , textPos)
+        if (!textPos) {
+            return false
+        }
+        textPos++
+    }
+    return true
+}
+
+; Filter websites based on search
+FilterWebsites() {
+    global searchBox
+    filter := searchBox.Value
+    PopulateList(filter)
+}
+
+; Move selection up or down
+MoveSelection(direction) {
+    global listView
+
+    currentRow := listView.GetNext()
+
+    if (direction > 0) {  ; Down
+        if (currentRow == 0) {
+            listView.Modify(1, "Select Focus")
+        } else if (currentRow < listView.GetCount()) {
+            listView.Modify(currentRow + 1, "Select Focus")
+        }
+    } else {  ; Up
+        if (currentRow > 1) {
+            listView.Modify(currentRow - 1, "Select Focus")
+        }
+    }
+}
+
+; Launch selected website/app
+LaunchSelected() {
+    global listView, filteredWebsites, config
+
+    selectedRow := listView.GetNext()
+    if (selectedRow == 0) {
+        return
+    }
+
+    ; Get the site from filtered list
+    if (selectedRow <= filteredWebsites.Length) {
+        site := filteredWebsites[selectedRow]
+
+        ; Hide launcher first
+        HideLauncher()
+
+        if (site.type == "clipboard") {
+            LaunchFromClipboard()
+        } else if (site.type == "firefox") {
+            ; Run the .lnk shortcut directly
+            Run(site.url)
+        } else {
+            ; Chrome app mode for websites.ini entries
+            LaunchWebsite(site.url)
+        }
+    }
+}
+
+; Launch website in Chrome app mode
+LaunchWebsite(url) {
+    global config
 
     ; Get Chrome executable path
     chromeExe := config["browserExe"]
@@ -203,6 +325,21 @@ LaunchWebsite(url, *) {
 
     ; Launch browser in app mode
     Run('"' chromeExe '" --app="' url '"')
+}
+
+; Launch URL from clipboard in app mode
+LaunchFromClipboard() {
+    ; Get clipboard content
+    clipContent := A_Clipboard
+
+    ; Basic URL validation (starts with http:// or https://)
+    if (!RegExMatch(clipContent, "^https?://")) {
+        MsgBox("Clipboard does not contain a valid URL", "Error", "Icon!")
+        return
+    }
+
+    ; Launch using existing function
+    LaunchWebsite(clipContent)
 }
 
 ; Center window on screen
