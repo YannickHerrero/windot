@@ -1,67 +1,152 @@
 # Windot - Windows Configuration Files
 
-Personal Windows configuration and scripts for a tiling window manager setup.
+Personal Windows/WSL configuration files with automated sync scripts for a tiling window manager setup.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Window Manager**: [GlazeWM](https://github.com/glzr-io/glazewm) - Tiling window manager for Windows
-- **Status Bar**: [Zebar](https://github.com/glzr-io/zebar) - Customizable status bar
+- **Status Bar**: [Zebar](https://github.com/glzr-io/zebar) - Custom React status bar with GlazeWM integration
 - **Terminal**: [WezTerm](https://wezfurlong.org/wezterm/) - GPU-accelerated terminal emulator
-- **Automation**: AutoHotkey v2 + PowerShell scripts
+- **Browser**: Firefox with custom userChrome.css styling
+- **Automation**: AutoHotkey v2 scripts for fuzzy-find launchers
+- **Editor**: Neovim with LazyVim configuration
+- **Shell**: Zsh with modular configuration
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 windot/
-├── glazewm/          # GlazeWM tiling window manager config
-│   └── config.yaml   # Main configuration file
-├── zebar/            # Zebar status bar config (glzr-io.starter pack)
-│   ├── settings.json # Active pack configuration
-│   ├── styles.css    # Bar styling and padding
-│   ├── zpack.json    # Widget positioning and dimensions
-│   └── *.html        # Widget templates
-├── scripts/          # Automation scripts
-│   ├── website-launcher.ahk      # Quick web app launcher (Alt+Space)
-│   ├── launch-browser-app.ps1    # PowerShell helper for Chrome app mode
-│   ├── launch-claude.vbs         # Silent launcher for Claude AI
-│   └── amphetamine.ahk           # Keep system awake utility
-├── wezterm.lua       # WezTerm terminal configuration
-└── README.md         # This file
+├── glzr/                   # GlazeWM & Zebar configs
+│   ├── glazewm/
+│   │   └── config.yaml     # Window manager keybindings, workspaces
+│   ├── zebar/
+│   │   ├── settings.json
+│   │   └── zebar-glazewm/  # Custom status bar (React/JSX)
+│   └── sync.sh
+├── scripts/                # AutoHotkey launchers
+│   ├── terminal-launcher.ahk   # Alt+Enter - Project folder launcher
+│   ├── website-launcher.ahk    # Alt+Space - Web app launcher
+│   ├── wallpaper-launcher.ahk  # Alt+W - Wallpaper selector
+│   ├── amphetamine.ahk         # Keep system awake
+│   ├── config.ini              # Shared theme config
+│   ├── folders.ini             # Static folder entries
+│   ├── websites.ini            # Website entries
+│   └── sync.sh
+├── standalone/             # Manual setup configs (no sync scripts)
+│   └── firefox/
+│       ├── userChrome.css  # Custom Firefox UI
+│       └── extensions.md   # Recommended extensions
+├── theme/
+│   ├── walls/              # Wallpaper images
+│   └── sync.sh
+├── wezterm/
+│   ├── .wezterm.lua
+│   └── sync.sh
+├── wsl/                    # WSL dotfiles
+│   ├── dotfiles/
+│   │   ├── .zshrc
+│   │   └── sync.sh
+│   ├── neovim/
+│   │   ├── nvim/           # Complete LazyVim config
+│   │   └── sync.sh
+│   └── zsh/
+│       ├── *.zsh           # Modular zsh config
+│       └── sync.sh
+├── sync.sh                 # Master sync script (fzf menu)
+└── README.md
 ```
 
-## 🚀 Features
+## Features
+
+### Sync System
+
+Run `./sync.sh` from the repo root for an interactive fzf menu to sync configs:
+
+```bash
+./sync.sh
+# Select "all" to sync everything, or choose individual configs
+```
+
+Individual sync scripts:
+- `glzr/sync.sh` - GlazeWM + Zebar to `~/.glzr/`
+- `wezterm/sync.sh` - WezTerm config to `~/.wezterm.lua`
+- `scripts/sync.sh` - AutoHotkey scripts to `~/scripts/`
+- `theme/sync.sh` - Wallpapers to `~/Pictures/Wallpapers/`
+- `wsl/dotfiles/sync.sh` - .zshrc to `~/`
+- `wsl/neovim/sync.sh` - Neovim config to `~/.config/nvim/`
+- `wsl/zsh/sync.sh` - Zsh modules to `~/.zsh/`
+
+### Launchers
+
+All launchers use Catppuccin Mocha theming and fuzzy-find filtering.
+
+**Terminal Launcher (Alt+Enter)**
+- Opens WezTerm in selected project folder
+- Auto-scans `~/dev/` for projects
+- Static entries from `folders.ini`
+
+**Website Launcher (Alt+Space)**
+- Launches web apps in Chrome app mode
+- Supports Chrome, Vivaldi, Brave, and Edge
+- Entries configured in `websites.ini`
+
+**Wallpaper Launcher (Alt+W)**
+- Fuzzy-find wallpaper selector
+- Scans `~/Pictures/Wallpapers/`
+- Sets desktop wallpaper instantly
 
 ### GlazeWM Configuration
-- **Gaps**: 12px uniform spacing
-- **Window Effects**: Catppuccin-themed borders, transparency
-- **Workspaces**: 1-9 with custom keybinds
-- **Auto-launch**: Zebar and website launcher on startup
 
-### Website Launcher (Alt+Space)
-Quick access launcher for web apps in Chrome app mode:
-- **N** - Nicoka
-- **J** - Jira
-- **B** - Bitbucket
-- **K** - Keymap Editor
-- **M** - Gmail
-- **P** - ProtonMail
-- **C** - Claude
-- **G** - GitHub
-- **O** - Outlook
-- **F** - Figma
-- **E** - Expo
+- **Gaps**: 12px uniform spacing
+- **Window Effects**: Catppuccin-themed borders
+- **Workspaces**: 1-9 with Alt+number keybinds
+- **Focus**: Alt+hjkl for vim-style navigation
+- **Reload**: Alt+Shift+R
 
 ### Zebar Status Bar
-- Fully flush with screen edges (0px padding)
-- Uses `dockToEdge` to reserve screen space
-- Custom Catppuccin styling
-- Integrated with GlazeWM workspaces
 
-## 📦 Installation
+Custom React-based status bar with:
+- GlazeWM workspace buttons
+- Active window title
+- CPU/Memory monitors (click to open Task Manager)
+- Date/time display
+- Catppuccin Mocha theme
+
+### Firefox Customization
+
+Located in `standalone/firefox/` (requires manual setup):
+
+**userChrome.css**:
+- Auto-hiding navbar (shows on hover)
+- Minimal tab design
+- Debloated toolbar
+- Catppuccin colors
+
+**Installation**:
+1. Enable `toolkit.legacyUserProfileCustomizations.stylesheets` in `about:config`
+2. Copy `userChrome.css` to `%APPDATA%\Mozilla\Firefox\Profiles\<profile>\chrome\`
+
+### WSL Dotfiles
+
+**Neovim**: Full LazyVim configuration with:
+- LSP support
+- Catppuccin theme
+- Copilot integration
+- Custom keybindings
+
+**Zsh**: Modular configuration with:
+- Aliases
+- Completions
+- Custom functions
+- History settings
+- Tool integrations (fzf, zoxide)
+
+## Installation
 
 ### Prerequisites
-- Windows 11 (for best compatibility)
-- WSL2 with Ubuntu (for file editing and git operations)
+
+- Windows 11
+- WSL2 with Ubuntu
 - [GlazeWM](https://github.com/glzr-io/glazewm)
 - [Zebar](https://github.com/glzr-io/zebar)
 - [WezTerm](https://wezfurlong.org/wezterm/)
@@ -70,86 +155,52 @@ Quick access launcher for web apps in Chrome app mode:
 
 ### Setup
 
-1. **Clone this repository (from WSL):**
+1. **Clone the repository (from WSL):**
    ```bash
-   git clone <your-repo-url> /mnt/c/Users/<username>/windot
+   git clone <repo-url> ~/dev/windot
+   cd ~/dev/windot
    ```
 
-2. **Copy configurations to their active locations:**
-
+2. **Sync all configurations:**
    ```bash
-   # GlazeWM config
-   cp -r windot/glazewm/* /mnt/c/Users/<username>/.glzr/glazewm/
-
-   # Zebar config (if using custom, otherwise use marketplace)
-   # Active config is in AppData/Roaming/zebar/downloads/glzr-io.starter@0.0.0/
-
-   # WezTerm config
-   cp windot/wezterm.lua /mnt/c/Users/<username>/.wezterm.lua
-
-   # Scripts
-   cp -r windot/scripts/* /mnt/c/Users/<username>/scripts/
+   ./sync.sh
+   # Select "all" or choose specific configs
    ```
 
 3. **Reload GlazeWM:**
    Press `Alt+Shift+R`
 
-## 🔄 Updating Configs
+4. **Start AutoHotkey scripts:**
+   Run the `.ahk` files from `C:\Users\<username>\scripts\`
 
-Since this repo uses manual copies (no symlinks), after making changes in WSL:
+## Keybindings
 
-```bash
-# Update from active locations to repo
-cp /mnt/c/Users/<username>/.glzr/glazewm/config.yaml windot/glazewm/
-cp /mnt/c/Users/<username>/.wezterm.lua windot/wezterm.lua
-cp /mnt/c/Users/<username>/scripts/* windot/scripts/
+| Hotkey | Action |
+|--------|--------|
+| Alt+Enter | Terminal launcher |
+| Alt+Space | Website launcher |
+| Alt+W | Wallpaper selector |
+| Alt+hjkl | Focus window |
+| Alt+1-9 | Switch workspace |
+| Alt+Shift+1-9 | Move window to workspace |
+| Alt+Shift+R | Reload GlazeWM |
+| Ctrl+Alt+Q | Exit amphetamine |
 
-# Commit changes
-cd windot
-git add .
-git commit -m "Update configs"
-git push
-```
+## Notes
 
-## 🎨 Customization
+- **Windows configs** sync to `C:\Users\<username>\`
+- **WSL configs** sync to the WSL home directory
+- **Firefox config** requires manual setup (see `standalone/firefox/`)
+- All launchers auto-detect installed applications
 
-### Adding websites to launcher
-Edit `scripts/website-launcher.ahk`:
-```ahk
-global websites := Map(
-    "x", {name: "Your Site", url: "https://example.com"}
-)
-```
-
-### Changing GlazeWM gaps
-Edit `glazewm/config.yaml`:
-```yaml
-gaps:
-  inner_gap: '12px'
-  outer_gap:
-    top: '12px'
-    # ...
-```
-
-### Customizing Zebar
-Edit `zebar/styles.css` for styling and `zebar/zpack.json` for positioning.
-
-## 📝 Notes
-
-- **Active Zebar config** is downloaded from marketplace to `/mnt/c/Users/<username>/AppData/Roaming/zebar/downloads/`
-- **Scripts location** is `/mnt/c/Users/<username>/scripts/`
-- **GlazeWM config** is in `/mnt/c/Users/<username>/.glzr/glazewm/`
-- **WezTerm config** is in `/mnt/c/Users/<username>/.wezterm.lua`
-- This repo contains **manual copies** for version control - changes to active configs must be manually synced
-- **Edited from WSL** - all paths use `/mnt/c/` prefix to access Windows files
-
-## 🔗 Useful Links
+## Links
 
 - [GlazeWM Documentation](https://github.com/glzr-io/glazewm)
 - [Zebar Documentation](https://github.com/glzr-io/zebar)
 - [WezTerm Documentation](https://wezfurlong.org/wezterm/)
 - [AutoHotkey v2 Docs](https://www.autohotkey.com/docs/v2/)
+- [LazyVim Documentation](https://www.lazyvim.org/)
 
-## 📄 License
+## License
 
 Personal configuration - use as you wish!
