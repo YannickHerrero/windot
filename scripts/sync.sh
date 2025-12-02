@@ -19,9 +19,5 @@ cp "$SCRIPT_DIR/wallpaper-launcher.ahk" "$WIN_SCRIPTS/wallpaper-launcher.ahk"
 cp "$SCRIPT_DIR/amphetamine.ahk" "$WIN_SCRIPTS/amphetamine.ahk"
 echo "  - AHK scripts (4 files)"
 
-# Sync utility scripts
-cp "$SCRIPT_DIR/launch-browser-app.ps1" "$WIN_SCRIPTS/launch-browser-app.ps1"
-echo "  - utility scripts (1 file)"
-
 echo ""
 echo "Done! Restart AutoHotkey scripts to apply changes."
