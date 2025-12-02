@@ -16,44 +16,12 @@ Personal Windows/WSL configuration files with automated sync scripts for a tilin
 
 ```
 windot/
-├── glzr/                   # GlazeWM & Zebar configs
-│   ├── glazewm/
-│   │   └── config.yaml     # Window manager keybindings, workspaces
-│   ├── zebar/
-│   │   ├── settings.json
-│   │   └── zebar-glazewm/  # Custom status bar (React/JSX)
-│   └── sync.sh
-├── scripts/                # AutoHotkey launchers
-│   ├── terminal-launcher.ahk   # Alt+Enter - Project folder launcher
-│   ├── website-launcher.ahk    # Alt+Space - Web app launcher
-│   ├── wallpaper-launcher.ahk  # Alt+W - Wallpaper selector
-│   ├── amphetamine.ahk         # Keep system awake
-│   ├── config.ini              # Shared theme config
-│   ├── folders.ini             # Static folder entries
-│   ├── websites.ini            # Website entries
-│   └── sync.sh
-├── standalone/             # Manual setup configs (no sync scripts)
-│   └── firefox/
-│       ├── userChrome.css  # Custom Firefox UI
-│       └── extensions.md   # Recommended extensions
-├── theme/
-│   ├── walls/              # Wallpaper images
-│   └── sync.sh
-├── wezterm/
-│   ├── .wezterm.lua
-│   └── sync.sh
-├── wsl/                    # WSL dotfiles
-│   ├── dotfiles/
-│   │   ├── .zshrc
-│   │   └── sync.sh
-│   ├── neovim/
-│   │   ├── nvim/           # Complete LazyVim config
-│   │   └── sync.sh
-│   └── zsh/
-│       ├── *.zsh           # Modular zsh config
-│       └── sync.sh
-├── sync.sh                 # Master sync script (fzf menu)
-└── README.md
+├── glzr/           # GlazeWM & Zebar configs
+├── scripts/        # AutoHotkey launchers
+├── standalone/     # Manual setup configs (Firefox)
+├── theme/          # Wallpapers
+├── wezterm/        # Terminal config
+└── wsl/            # WSL dotfiles (neovim, zsh)
 ```
 
 ## Features
