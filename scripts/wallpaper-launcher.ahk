@@ -15,6 +15,7 @@ global launcherGui := ""
 global isVisible := false
 global searchBox := ""
 global listView := ""
+global previewPic := ""
 
 ; Wallpaper folder path (synced location)
 global wallpaperPath := "C:\Users\yannick.herrero\Pictures\Wallpapers"
@@ -89,7 +90,7 @@ ToggleLauncher() {
 
 ; Show the launcher
 ShowLauncher() {
-    global launcherGui, isVisible, searchBox, listView, wallpapers, config
+    global launcherGui, isVisible, searchBox, listView, previewPic, wallpapers, config
 
     ; Create GUI if it doesn't exist
     if (!launcherGui) {
@@ -131,8 +132,12 @@ ShowLauncher() {
 
         ; Add list view with custom colors
         launcherGui.SetFont("s" fontSize " c" txt, font)
-        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
+        listView := launcherGui.Add("ListView", "x20 y135 w460 h350 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
         listView.OnEvent("DoubleClick", (*) => SetSelectedWallpaper())
+        listView.OnEvent("ItemSelect", UpdatePreview)
+
+        ; Add preview panel on the right
+        previewPic := launcherGui.Add("Picture", "x500 y85 w380 h400 +Border Background" bg)
 
         ; Populate initial list
         PopulateList()
@@ -187,9 +192,11 @@ PopulateList(filter := "") {
         }
     }
 
-    ; Select first item if available
+    ; Select first item if available and update preview
     if (listView.GetCount() > 0) {
         listView.Modify(1, "Select Focus")
+        ; Manually trigger preview update for initial selection
+        UpdatePreview(listView, 1, true)
     }
 }
 
@@ -216,22 +223,41 @@ FilterWallpapers() {
     PopulateList(filter)
 }
 
+; Update preview image when selection changes
+UpdatePreview(LV, Item, Selected) {
+    global filteredWallpapers, previewPic
+
+    ; Only update on selection, not deselection
+    if (!Selected || Item < 1 || Item > filteredWallpapers.Length)
+        return
+
+    wallpaper := filteredWallpapers[Item]
+    ; Load image with aspect-ratio-preserving resize (width 380, height auto)
+    previewPic.Value := "*w380 *h-1 " wallpaper.fullPath
+}
+
 ; Move selection up or down
 MoveSelection(direction) {
     global listView
 
     currentRow := listView.GetNext()
+    newRow := currentRow
 
     if (direction > 0) {  ; Down
         if (currentRow == 0) {
-            listView.Modify(1, "Select Focus")
+            newRow := 1
         } else if (currentRow < listView.GetCount()) {
-            listView.Modify(currentRow + 1, "Select Focus")
+            newRow := currentRow + 1
         }
     } else {  ; Up
         if (currentRow > 1) {
-            listView.Modify(currentRow - 1, "Select Focus")
+            newRow := currentRow - 1
         }
+    }
+
+    if (newRow != currentRow) {
+        listView.Modify(newRow, "Select Focus")
+        UpdatePreview(listView, newRow, true)
     }
 }
 
