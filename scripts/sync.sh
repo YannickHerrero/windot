@@ -15,8 +15,9 @@ echo "  - config files (3 files)"
 # Sync AutoHotkey scripts
 cp "$SCRIPT_DIR/terminal-launcher.ahk" "$WIN_SCRIPTS/terminal-launcher.ahk"
 cp "$SCRIPT_DIR/website-launcher.ahk" "$WIN_SCRIPTS/website-launcher.ahk"
+cp "$SCRIPT_DIR/wallpaper-launcher.ahk" "$WIN_SCRIPTS/wallpaper-launcher.ahk"
 cp "$SCRIPT_DIR/amphetamine.ahk" "$WIN_SCRIPTS/amphetamine.ahk"
-echo "  - AHK scripts (3 files)"
+echo "  - AHK scripts (4 files)"
 
 # Sync utility scripts
 cp "$SCRIPT_DIR/launch-browser-app.ps1" "$WIN_SCRIPTS/launch-browser-app.ps1"
