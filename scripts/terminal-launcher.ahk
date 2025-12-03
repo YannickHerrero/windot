@@ -17,11 +17,11 @@ LoadTerminalConfig() {
     global scriptDir, folders, config
 
     ; Read terminal executable from config
-    configFile := scriptDir . "\config.ini"
+    configFile := scriptDir . "\config\config.ini"
     config["terminalExe"] := IniRead(configFile, "Terminal", "executable", "")
 
     ; Load folders from INI
-    foldersFile := scriptDir . "\folders.ini"
+    foldersFile := scriptDir . "\config\folders.ini"
     if (!FileExist(foldersFile)) {
         MsgBox("Folders config not found: " foldersFile, "Error", "Icon!")
         ExitApp()

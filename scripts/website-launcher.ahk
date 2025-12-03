@@ -17,11 +17,11 @@ LoadWebsiteConfig() {
     global scriptDir, websites, config
 
     ; Read browser executable from config
-    configFile := scriptDir . "\config.ini"
+    configFile := scriptDir . "\config\config.ini"
     config["browserExe"] := IniRead(configFile, "Browser", "executable", "")
 
     ; Load websites from INI
-    websitesFile := scriptDir . "\websites.ini"
+    websitesFile := scriptDir . "\config\websites.ini"
     if (!FileExist(websitesFile)) {
         MsgBox("Websites config not found: " websitesFile, "Error", "Icon!")
         ExitApp()

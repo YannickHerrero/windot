@@ -6,24 +6,19 @@ WIN_SCRIPTS="/mnt/c/Users/yannick.herrero/scripts"
 
 echo "Syncing scripts to $WIN_SCRIPTS..."
 
-# Sync config files
-cp "$SCRIPT_DIR/config.ini" "$WIN_SCRIPTS/config.ini"
-cp "$SCRIPT_DIR/folders.ini" "$WIN_SCRIPTS/folders.ini"
-cp "$SCRIPT_DIR/websites.ini" "$WIN_SCRIPTS/websites.ini"
-echo "  - config files (3 files)"
+# Sync all AHK files
+cp "$SCRIPT_DIR"/*.ahk "$WIN_SCRIPTS/"
+echo "  - AHK scripts"
 
 # Sync lib folder
 mkdir -p "$WIN_SCRIPTS/lib"
-cp "$SCRIPT_DIR/lib/common.ahk" "$WIN_SCRIPTS/lib/common.ahk"
-echo "  - lib/common.ahk"
+cp "$SCRIPT_DIR/lib"/*.ahk "$WIN_SCRIPTS/lib/"
+echo "  - lib/*.ahk"
 
-# Sync AutoHotkey scripts
-cp "$SCRIPT_DIR/terminal-launcher.ahk" "$WIN_SCRIPTS/terminal-launcher.ahk"
-cp "$SCRIPT_DIR/website-launcher.ahk" "$WIN_SCRIPTS/website-launcher.ahk"
-cp "$SCRIPT_DIR/wallpaper-launcher.ahk" "$WIN_SCRIPTS/wallpaper-launcher.ahk"
-cp "$SCRIPT_DIR/amphetamine.ahk" "$WIN_SCRIPTS/amphetamine.ahk"
-cp "$SCRIPT_DIR/master.ahk" "$WIN_SCRIPTS/master.ahk"
-echo "  - AHK scripts (5 files)"
+# Sync config folder
+mkdir -p "$WIN_SCRIPTS/config"
+cp "$SCRIPT_DIR/config"/*.ini "$WIN_SCRIPTS/config/"
+echo "  - config/*.ini"
 
 echo ""
-echo "Done! Restart AutoHotkey scripts to apply changes."
+echo "Done! Restart master.ahk to apply changes."
