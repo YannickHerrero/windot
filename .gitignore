@@ -1,20 +1,57 @@
-# OS generated files
-.DS_Store
+# Windows
 Thumbs.db
-desktop.ini
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 *:Zone.Identifier
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Editor/IDE
+*.swp
+*.swo
+*.swn
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
 
 # Temporary files
 *.tmp
 *.temp
 *.log
-*.swp
-*.swo
-*~
-
-# Editor files
-.vscode/
-.idea/
 
 # Sensitive data
 *.key
@@ -23,12 +60,13 @@ desktop.ini
 credentials.json
 secrets.json
 
+# Claude
+CLAUDE.md
+.claude/
+
 # Large media files (keep wallpapers tracked)
 # If walls/ gets too big, uncomment:
 # *.png
 # *.jpg
 # *.jpeg
 # !walls/
-
-# Git
-.git/
