@@ -1,51 +1,23 @@
 ; Terminal Launcher - Quick access to project folders in WezTerm
 ; Press Alt+Enter to open launcher
 
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-
-; Get script directory for config files
-global scriptDir := A_ScriptDir
-
-; Global variables
+; Global variables (unique names to avoid conflicts)
 global folders := []
-global config := Map()
-global launcherGui := ""
-global isVisible := false
-global searchBox := ""
-global listView := ""
 global filteredFolders := []
+global terminalGui := ""
+global terminalVisible := false
+global terminalSearch := ""
+global terminalList := ""
 
-; Load configuration
-LoadConfig()
+; Load folder configuration
+LoadTerminalConfig()
 
-; Load configuration from files
-LoadConfig() {
+; Load folders from config files
+LoadTerminalConfig() {
     global scriptDir, folders, config
 
-    ; Load INI config
+    ; Read terminal executable from config
     configFile := scriptDir . "\config.ini"
-    if (!FileExist(configFile)) {
-        MsgBox("Config file not found: " configFile, "Error", "Icon!")
-        ExitApp()
-    }
-
-    ; Read INI settings
-    config["theme"] := Map(
-        "background", IniRead(configFile, "Theme", "background", "1e1e2e"),
-        "primary", IniRead(configFile, "Theme", "primary", "ff79c6"),
-        "accent", IniRead(configFile, "Theme", "accent", "89b4fa"),
-        "text", IniRead(configFile, "Theme", "text", "b4befe"),
-        "muted", IniRead(configFile, "Theme", "muted", "6c7086"),
-        "border", IniRead(configFile, "Theme", "border", "45475a")
-    )
-
-    config["gui"] := Map(
-        "font", IniRead(configFile, "GUI", "font", "Segoe UI"),
-        "fontSize", IniRead(configFile, "GUI", "fontSize", "11"),
-        "titleSize", IniRead(configFile, "GUI", "titleSize", "13")
-    )
-
     config["terminalExe"] := IniRead(configFile, "Terminal", "executable", "")
 
     ; Load folders from INI
@@ -86,24 +58,24 @@ LoadConfig() {
 }
 
 ; Hotkey to toggle launcher (Alt+Enter)
-!Enter::ToggleLauncher()
+!Enter::ToggleTerminalLauncher()
 
 ; Function to show/hide launcher
-ToggleLauncher() {
-    global isVisible
-    if (isVisible) {
-        HideLauncher()
+ToggleTerminalLauncher() {
+    global terminalVisible
+    if (terminalVisible) {
+        HideTerminalLauncher()
     } else {
-        ShowLauncher()
+        ShowTerminalLauncher()
     }
 }
 
 ; Show the launcher
-ShowLauncher() {
-    global launcherGui, isVisible, searchBox, listView, folders, config
+ShowTerminalLauncher() {
+    global terminalGui, terminalVisible, terminalSearch, terminalList, folders, config
 
     ; Create GUI if it doesn't exist
-    if (!launcherGui) {
+    if (!terminalGui) {
         ; Get theme colors
         bg := config["theme"]["background"]
         primary := config["theme"]["primary"]
@@ -117,141 +89,125 @@ ShowLauncher() {
         fontSize := config["gui"]["fontSize"]
         titleSize := config["gui"]["titleSize"]
 
-        launcherGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Terminal Launcher")
-        launcherGui.BackColor := bg
-        launcherGui.SetFont("s" fontSize " c" txt, font)
+        terminalGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Terminal Launcher")
+        terminalGui.BackColor := bg
+        terminalGui.SetFont("s" fontSize " c" txt, font)
 
         ; Add title
-        launcherGui.SetFont("s" titleSize " Bold c" primary, font)
-        launcherGui.Add("Text", "x20 y15 w460 Center", "Terminal Launcher")
+        terminalGui.SetFont("s" titleSize " Bold c" primary, font)
+        terminalGui.Add("Text", "x20 y15 w460 Center", "Terminal Launcher")
 
         ; Add instructions
-        launcherGui.SetFont("s9 c" muted, font)
-        launcherGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
+        terminalGui.SetFont("s9 c" muted, font)
+        terminalGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
 
         ; Add separator
-        launcherGui.Add("Text", "x20 y70 w460 h1 Background" accent)
+        terminalGui.Add("Text", "x20 y70 w460 h1 Background" accent)
 
         ; Add search box
-        launcherGui.SetFont("s" fontSize " c" txt, font)
-        searchBox := launcherGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
-        searchBox.OnEvent("Change", (*) => FilterFolders())
+        terminalGui.SetFont("s" fontSize " c" txt, font)
+        terminalSearch := terminalGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
+        terminalSearch.OnEvent("Change", (*) => FilterTerminalFolders())
 
         ; Add bottom border for search box
-        launcherGui.Add("Text", "x20 y116 w460 h1 Background" border)
+        terminalGui.Add("Text", "x20 y116 w460 h1 Background" border)
 
         ; Add list view with custom colors
-        launcherGui.SetFont("s" fontSize " c" txt, font)
-        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name", "Path"])
-        listView.OnEvent("DoubleClick", (*) => LaunchTerminal())
+        terminalGui.SetFont("s" fontSize " c" txt, font)
+        terminalList := terminalGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name", "Path"])
+        terminalList.OnEvent("DoubleClick", (*) => LaunchTerminal())
 
         ; Populate initial list
-        PopulateList()
+        PopulateTerminalList()
 
         ; Handle keyboard shortcuts
-        launcherGui.OnEvent("Escape", (*) => HideLauncher())
+        terminalGui.OnEvent("Escape", (*) => HideTerminalLauncher())
 
         ; Set column widths
-        listView.ModifyCol(1, 200)
-        listView.ModifyCol(2, 240)
+        terminalList.ModifyCol(1, 200)
+        terminalList.ModifyCol(2, 240)
 
         ; Set up context-sensitive hotkeys
-        HotIfWinActive("ahk_id " launcherGui.Hwnd)
+        HotIfWinActive("ahk_id " terminalGui.Hwnd)
         Hotkey("Enter", (*) => LaunchTerminal(), "On")
-        Hotkey("Down", (*) => MoveSelection(1), "On")
-        Hotkey("Up", (*) => MoveSelection(-1), "On")
+        Hotkey("Down", (*) => MoveTerminalSelection(1), "On")
+        Hotkey("Up", (*) => MoveTerminalSelection(-1), "On")
         HotIfWinActive()
     }
 
     ; Reset search and refresh list
-    searchBox.Value := ""
-    PopulateList()
+    terminalSearch.Value := ""
+    PopulateTerminalList()
 
     ; Center and show
-    CenterWindow(launcherGui)
-    launcherGui.Show()
-    searchBox.Focus()
-    isVisible := true
+    CenterWindow(terminalGui)
+    terminalGui.Show()
+    terminalSearch.Focus()
+    terminalVisible := true
 }
 
 ; Hide the launcher
-HideLauncher() {
-    global launcherGui, isVisible
+HideTerminalLauncher() {
+    global terminalGui, terminalVisible
 
-    if (launcherGui) {
-        launcherGui.Hide()
-        isVisible := false
+    if (terminalGui) {
+        terminalGui.Hide()
+        terminalVisible := false
     }
 }
 
 ; Populate list with folders
-PopulateList(filter := "") {
-    global listView, folders, filteredFolders
+PopulateTerminalList(filter := "") {
+    global terminalList, folders, filteredFolders
 
-    listView.Delete()
+    terminalList.Delete()
     filteredFolders := []
 
     for folder in folders {
         ; Fuzzy match filter (name only)
         if (filter == "" || FuzzyMatch(folder.name, filter)) {
-            listView.Add("", folder.name, folder.displayPath)
+            terminalList.Add("", folder.name, folder.displayPath)
             filteredFolders.Push(folder)
         }
     }
 
     ; Select first item if available
-    if (listView.GetCount() > 0) {
-        listView.Modify(1, "Select Focus")
+    if (terminalList.GetCount() > 0) {
+        terminalList.Modify(1, "Select Focus")
     }
-}
-
-; Simple fuzzy matching
-FuzzyMatch(text, pattern) {
-    text := StrLower(text)
-    pattern := StrLower(pattern)
-
-    textPos := 1
-    for charIndex, char in StrSplit(pattern) {
-        textPos := InStr(text, char, , textPos)
-        if (!textPos) {
-            return false
-        }
-        textPos++
-    }
-    return true
 }
 
 ; Filter folders based on search
-FilterFolders() {
-    global searchBox
-    filter := searchBox.Value
-    PopulateList(filter)
+FilterTerminalFolders() {
+    global terminalSearch
+    filter := terminalSearch.Value
+    PopulateTerminalList(filter)
 }
 
 ; Move selection up or down
-MoveSelection(direction) {
-    global listView
+MoveTerminalSelection(direction) {
+    global terminalList
 
-    currentRow := listView.GetNext()
+    currentRow := terminalList.GetNext()
 
     if (direction > 0) {  ; Down
         if (currentRow == 0) {
-            listView.Modify(1, "Select Focus")
-        } else if (currentRow < listView.GetCount()) {
-            listView.Modify(currentRow + 1, "Select Focus")
+            terminalList.Modify(1, "Select Focus")
+        } else if (currentRow < terminalList.GetCount()) {
+            terminalList.Modify(currentRow + 1, "Select Focus")
         }
     } else {  ; Up
         if (currentRow > 1) {
-            listView.Modify(currentRow - 1, "Select Focus")
+            terminalList.Modify(currentRow - 1, "Select Focus")
         }
     }
 }
 
 ; Launch terminal with selected folder
 LaunchTerminal() {
-    global listView, filteredFolders, config
+    global terminalList, filteredFolders, config
 
-    selectedRow := listView.GetNext()
+    selectedRow := terminalList.GetNext()
     if (selectedRow == 0) {
         return
     }
@@ -288,20 +244,6 @@ LaunchTerminal() {
         Run('"' weztermExe '" start --cwd "' folder.path '"')
 
         ; Hide launcher
-        HideLauncher()
+        HideTerminalLauncher()
     }
-}
-
-; Center window on screen
-CenterWindow(guiObj) {
-    guiObj.Show("Hide")
-    guiObj.GetPos(, , &width, &height)
-
-    ; Get monitor info for the active monitor
-    MonitorGet(MonitorGetPrimary(), &mLeft, &mTop, &mRight, &mBottom)
-
-    x := mLeft + (mRight - mLeft - width) // 2
-    y := mTop + (mBottom - mTop - height) // 2
-
-    guiObj.Move(x, y)
 }

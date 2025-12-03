@@ -1,51 +1,23 @@
 ; Website Launcher - Quick access to web apps with fuzzy find
 ; Press Alt+Space to open launcher
 
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-
-; Get script directory for config files
-global scriptDir := A_ScriptDir
-
-; Global variables
+; Global variables (unique names to avoid conflicts)
 global websites := []
 global filteredWebsites := []
-global config := Map()
-global launcherGui := ""
-global isVisible := false
-global searchBox := ""
-global listView := ""
+global websiteGui := ""
+global websiteVisible := false
+global websiteSearch := ""
+global websiteList := ""
 
-; Load configuration
-LoadConfig()
+; Load website configuration
+LoadWebsiteConfig()
 
-; Load configuration from files
-LoadConfig() {
+; Load websites from config files
+LoadWebsiteConfig() {
     global scriptDir, websites, config
 
-    ; Load INI config
+    ; Read browser executable from config
     configFile := scriptDir . "\config.ini"
-    if (!FileExist(configFile)) {
-        MsgBox("Config file not found: " configFile, "Error", "Icon!")
-        ExitApp()
-    }
-
-    ; Read INI settings
-    config["theme"] := Map(
-        "background", IniRead(configFile, "Theme", "background", "1e1e2e"),
-        "primary", IniRead(configFile, "Theme", "primary", "ff79c6"),
-        "accent", IniRead(configFile, "Theme", "accent", "89b4fa"),
-        "text", IniRead(configFile, "Theme", "text", "b4befe"),
-        "muted", IniRead(configFile, "Theme", "muted", "6c7086"),
-        "border", IniRead(configFile, "Theme", "border", "45475a")
-    )
-
-    config["gui"] := Map(
-        "font", IniRead(configFile, "GUI", "font", "Segoe UI"),
-        "fontSize", IniRead(configFile, "GUI", "fontSize", "11"),
-        "titleSize", IniRead(configFile, "GUI", "titleSize", "13")
-    )
-
     config["browserExe"] := IniRead(configFile, "Browser", "executable", "")
 
     ; Load websites from INI
@@ -91,31 +63,31 @@ LoadConfig() {
     ; Add clipboard entry as searchable item
     websites.Push({
         name: "Paste from Clipboard",
-        displayName: "[📋] Paste from Clipboard",
+        displayName: "[clipboard] Paste from Clipboard",
         url: "",
         type: "clipboard"
     })
 }
 
 ; Hotkey to toggle launcher (Alt+Space)
-!Space::ToggleLauncher()
+!Space::ToggleWebsiteLauncher()
 
 ; Function to show/hide launcher
-ToggleLauncher() {
-    global isVisible
-    if (isVisible) {
-        HideLauncher()
+ToggleWebsiteLauncher() {
+    global websiteVisible
+    if (websiteVisible) {
+        HideWebsiteLauncher()
     } else {
-        ShowLauncher()
+        ShowWebsiteLauncher()
     }
 }
 
 ; Show the launcher
-ShowLauncher() {
-    global launcherGui, isVisible, searchBox, listView, websites, config
+ShowWebsiteLauncher() {
+    global websiteGui, websiteVisible, websiteSearch, websiteList, websites, config
 
     ; Create GUI if it doesn't exist
-    if (!launcherGui) {
+    if (!websiteGui) {
         ; Get theme colors
         bg := config["theme"]["background"]
         primary := config["theme"]["primary"]
@@ -129,140 +101,124 @@ ShowLauncher() {
         fontSize := config["gui"]["fontSize"]
         titleSize := config["gui"]["titleSize"]
 
-        launcherGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Website Launcher")
-        launcherGui.BackColor := bg
-        launcherGui.SetFont("s" fontSize " c" txt, font)
+        websiteGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow", "Website Launcher")
+        websiteGui.BackColor := bg
+        websiteGui.SetFont("s" fontSize " c" txt, font)
 
         ; Add title
-        launcherGui.SetFont("s" titleSize " Bold c" primary, font)
-        launcherGui.Add("Text", "x20 y15 w460 Center", "Quick Launch")
+        websiteGui.SetFont("s" titleSize " Bold c" primary, font)
+        websiteGui.Add("Text", "x20 y15 w460 Center", "Quick Launch")
 
         ; Add instructions
-        launcherGui.SetFont("s9 c" muted, font)
-        launcherGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
+        websiteGui.SetFont("s9 c" muted, font)
+        websiteGui.Add("Text", "x20 y45 w460 Center", "Type to filter • Enter to open • ESC to close")
 
         ; Add separator
-        launcherGui.Add("Text", "x20 y70 w460 h1 Background" accent)
+        websiteGui.Add("Text", "x20 y70 w460 h1 Background" accent)
 
         ; Add search box
-        launcherGui.SetFont("s" fontSize " c" txt, font)
-        searchBox := launcherGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
-        searchBox.OnEvent("Change", (*) => FilterWebsites())
+        websiteGui.SetFont("s" fontSize " c" txt, font)
+        websiteSearch := websiteGui.Add("Edit", "x20 y85 w460 h30 -E0x200 Background" bg " c" txt)
+        websiteSearch.OnEvent("Change", (*) => FilterWebsites())
 
         ; Add bottom border for search box
-        launcherGui.Add("Text", "x20 y116 w460 h1 Background" border)
+        websiteGui.Add("Text", "x20 y116 w460 h1 Background" border)
 
         ; Add list view with custom colors
-        launcherGui.SetFont("s" fontSize " c" txt, font)
-        listView := launcherGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
-        listView.OnEvent("DoubleClick", (*) => LaunchSelected())
+        websiteGui.SetFont("s" fontSize " c" txt, font)
+        websiteList := websiteGui.Add("ListView", "x20 y135 w460 h300 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
+        websiteList.OnEvent("DoubleClick", (*) => LaunchSelectedWebsite())
 
         ; Populate initial list
-        PopulateList()
+        PopulateWebsiteList()
 
         ; Handle keyboard shortcuts
-        launcherGui.OnEvent("Escape", (*) => HideLauncher())
+        websiteGui.OnEvent("Escape", (*) => HideWebsiteLauncher())
 
         ; Set column width
-        listView.ModifyCol(1, 440)
+        websiteList.ModifyCol(1, 440)
 
         ; Set up context-sensitive hotkeys
-        HotIfWinActive("ahk_id " launcherGui.Hwnd)
-        Hotkey("Enter", (*) => LaunchSelected(), "On")
-        Hotkey("Down", (*) => MoveSelection(1), "On")
-        Hotkey("Up", (*) => MoveSelection(-1), "On")
+        HotIfWinActive("ahk_id " websiteGui.Hwnd)
+        Hotkey("Enter", (*) => LaunchSelectedWebsite(), "On")
+        Hotkey("Down", (*) => MoveWebsiteSelection(1), "On")
+        Hotkey("Up", (*) => MoveWebsiteSelection(-1), "On")
         HotIfWinActive()
     }
 
     ; Reset search and refresh list
-    searchBox.Value := ""
-    PopulateList()
+    websiteSearch.Value := ""
+    PopulateWebsiteList()
 
     ; Center and show
-    CenterWindow(launcherGui)
-    launcherGui.Show()
-    searchBox.Focus()
-    isVisible := true
+    CenterWindow(websiteGui)
+    websiteGui.Show()
+    websiteSearch.Focus()
+    websiteVisible := true
 }
 
 ; Hide the launcher
-HideLauncher() {
-    global launcherGui, isVisible
+HideWebsiteLauncher() {
+    global websiteGui, websiteVisible
 
-    if (launcherGui) {
-        launcherGui.Hide()
-        isVisible := false
+    if (websiteGui) {
+        websiteGui.Hide()
+        websiteVisible := false
     }
 }
 
 ; Populate list with websites
-PopulateList(filter := "") {
-    global listView, websites, filteredWebsites
+PopulateWebsiteList(filter := "") {
+    global websiteList, websites, filteredWebsites
 
-    listView.Delete()
+    websiteList.Delete()
     filteredWebsites := []
 
     for site in websites {
         ; Fuzzy match filter (name only)
         if (filter == "" || FuzzyMatch(site.name, filter)) {
-            listView.Add("", site.displayName)
+            websiteList.Add("", site.displayName)
             filteredWebsites.Push(site)
         }
     }
 
     ; Select first item if available
-    if (listView.GetCount() > 0) {
-        listView.Modify(1, "Select Focus")
+    if (websiteList.GetCount() > 0) {
+        websiteList.Modify(1, "Select Focus")
     }
-}
-
-; Simple fuzzy matching
-FuzzyMatch(text, pattern) {
-    text := StrLower(text)
-    pattern := StrLower(pattern)
-
-    textPos := 1
-    for charIndex, char in StrSplit(pattern) {
-        textPos := InStr(text, char, , textPos)
-        if (!textPos) {
-            return false
-        }
-        textPos++
-    }
-    return true
 }
 
 ; Filter websites based on search
 FilterWebsites() {
-    global searchBox
-    filter := searchBox.Value
-    PopulateList(filter)
+    global websiteSearch
+    filter := websiteSearch.Value
+    PopulateWebsiteList(filter)
 }
 
 ; Move selection up or down
-MoveSelection(direction) {
-    global listView
+MoveWebsiteSelection(direction) {
+    global websiteList
 
-    currentRow := listView.GetNext()
+    currentRow := websiteList.GetNext()
 
     if (direction > 0) {  ; Down
         if (currentRow == 0) {
-            listView.Modify(1, "Select Focus")
-        } else if (currentRow < listView.GetCount()) {
-            listView.Modify(currentRow + 1, "Select Focus")
+            websiteList.Modify(1, "Select Focus")
+        } else if (currentRow < websiteList.GetCount()) {
+            websiteList.Modify(currentRow + 1, "Select Focus")
         }
     } else {  ; Up
         if (currentRow > 1) {
-            listView.Modify(currentRow - 1, "Select Focus")
+            websiteList.Modify(currentRow - 1, "Select Focus")
         }
     }
 }
 
 ; Launch selected website/app
-LaunchSelected() {
-    global listView, filteredWebsites, config
+LaunchSelectedWebsite() {
+    global websiteList, filteredWebsites, config
 
-    selectedRow := listView.GetNext()
+    selectedRow := websiteList.GetNext()
     if (selectedRow == 0) {
         return
     }
@@ -272,7 +228,7 @@ LaunchSelected() {
         site := filteredWebsites[selectedRow]
 
         ; Hide launcher first
-        HideLauncher()
+        HideWebsiteLauncher()
 
         if (site.type == "clipboard") {
             LaunchFromClipboard()
@@ -340,18 +296,4 @@ LaunchFromClipboard() {
 
     ; Launch using existing function
     LaunchWebsite(clipContent)
-}
-
-; Center window on screen
-CenterWindow(guiObj) {
-    guiObj.Show("Hide")
-    guiObj.GetPos(, , &width, &height)
-
-    ; Get monitor info for the active monitor
-    MonitorGet(MonitorGetPrimary(), &mLeft, &mTop, &mRight, &mBottom)
-
-    x := mLeft + (mRight - mLeft - width) // 2
-    y := mTop + (mBottom - mTop - height) // 2
-
-    guiObj.Move(x, y)
 }

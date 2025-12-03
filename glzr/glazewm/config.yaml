@@ -4,9 +4,7 @@ general:
   # Example: The below command launches Zebar.
   startup_commands: [
     'shell-exec zebar',
-    'shell-exec C:/Users/yannick.herrero/scripts/website-launcher.ahk',
-    'shell-exec C:/Users/yannick.herrero/scripts/terminal-launcher.ahk',
-    'shell-exec C:/Users/yannick.herrero/scripts/amphetamine.ahk'
+    'shell-exec C:/Users/yannick.herrero/scripts/master.ahk'
   ]
 
   # Commands to run just before the WM is shutdown.

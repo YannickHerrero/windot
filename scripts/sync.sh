@@ -12,12 +12,18 @@ cp "$SCRIPT_DIR/folders.ini" "$WIN_SCRIPTS/folders.ini"
 cp "$SCRIPT_DIR/websites.ini" "$WIN_SCRIPTS/websites.ini"
 echo "  - config files (3 files)"
 
+# Sync lib folder
+mkdir -p "$WIN_SCRIPTS/lib"
+cp "$SCRIPT_DIR/lib/common.ahk" "$WIN_SCRIPTS/lib/common.ahk"
+echo "  - lib/common.ahk"
+
 # Sync AutoHotkey scripts
 cp "$SCRIPT_DIR/terminal-launcher.ahk" "$WIN_SCRIPTS/terminal-launcher.ahk"
 cp "$SCRIPT_DIR/website-launcher.ahk" "$WIN_SCRIPTS/website-launcher.ahk"
 cp "$SCRIPT_DIR/wallpaper-launcher.ahk" "$WIN_SCRIPTS/wallpaper-launcher.ahk"
 cp "$SCRIPT_DIR/amphetamine.ahk" "$WIN_SCRIPTS/amphetamine.ahk"
-echo "  - AHK scripts (4 files)"
+cp "$SCRIPT_DIR/master.ahk" "$WIN_SCRIPTS/master.ahk"
+echo "  - AHK scripts (5 files)"
 
 echo ""
 echo "Done! Restart AutoHotkey scripts to apply changes."
