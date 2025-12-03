@@ -8,8 +8,10 @@
 global scriptDir := A_ScriptDir
 global config := Map()
 
-; Include common library (shared functions)
-#Include "lib/common.ahk"
+; Include library functions
+#Include "lib/fuzzy-match.ahk"
+#Include "lib/center-window.ahk"
+#Include "lib/theme-config.ahk"
 
 ; Load theme and GUI configuration
 LoadThemeConfig()
