@@ -12,6 +12,7 @@ global config := Map()
 #Include "lib/fuzzy-match.ahk"
 #Include "lib/center-window.ahk"
 #Include "lib/theme-config.ahk"
+#Include "lib/help-window.ahk"
 
 ; Load theme and GUI configuration
 LoadThemeConfig()
@@ -27,6 +28,7 @@ LoadThemeConfig()
 !Space::ToggleWebsiteLauncher()
 !w::ToggleWallpaperLauncher()
 ^!a::ToggleAmphetamine()
+!+/::ToggleHelpWindow()
 
 ; Keep script running with tray icon
 Persistent

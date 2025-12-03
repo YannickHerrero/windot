@@ -18,6 +18,8 @@ Personal Windows/WSL configuration files with automated sync scripts for a tilin
 windot/
 ├── glzr/           # GlazeWM & Zebar configs
 ├── scripts/        # AutoHotkey launchers
+│   ├── config/     # INI configuration files
+│   └── lib/        # Shared library functions
 ├── standalone/     # Manual setup configs (Firefox)
 ├── theme/          # Wallpapers
 ├── wezterm/        # Terminal config
@@ -46,22 +48,31 @@ Individual sync scripts:
 
 ### Launchers
 
-All launchers use Catppuccin Mocha theming and fuzzy-find filtering.
+All launchers are consolidated into a single `master.ahk` script with shared libraries. Uses Catppuccin Mocha theming and fuzzy-find filtering.
 
 **Terminal Launcher (Alt+Enter)**
 - Opens WezTerm in selected project folder
 - Auto-scans `~/dev/` for projects
-- Static entries from `folders.ini`
+- Static entries from `config/folders.ini`
 
 **Website Launcher (Alt+Space)**
 - Launches web apps in Chrome app mode
 - Supports Chrome, Vivaldi, Brave, and Edge
-- Entries configured in `websites.ini`
+- Entries configured in `config/websites.ini`
 
-**Wallpaper Launcher (Alt+W)**
-- Fuzzy-find wallpaper selector
+**Wallpaper Selector (Alt+W)**
+- Fuzzy-find wallpaper selector with live preview
 - Scans `~/Pictures/Wallpapers/`
 - Sets desktop wallpaper instantly
+
+**Amphetamine (Ctrl+Alt+A)**
+- Prevents screen lock with natural mouse movement
+- Toggle on/off with tooltip feedback
+- Enabled by default on startup
+
+**Help Window (Alt+?)**
+- Shows all available keyboard shortcuts
+- Displays amphetamine status (ON/OFF)
 
 ### GlazeWM Configuration
 
@@ -139,20 +150,28 @@ Located in `standalone/firefox/` (requires manual setup):
    Press `Alt+Shift+R`
 
 4. **Start AutoHotkey scripts:**
-   Run the `.ahk` files from `C:\Users\<username>\scripts\`
+   Run `master.ahk` from `C:\Users\<username>\scripts\` (single script handles all launchers)
 
 ## Keybindings
+
+### AutoHotkey Launchers
 
 | Hotkey | Action |
 |--------|--------|
 | Alt+Enter | Terminal launcher |
 | Alt+Space | Website launcher |
 | Alt+W | Wallpaper selector |
+| Ctrl+Alt+A | Toggle amphetamine |
+| Alt+? | Help window |
+
+### GlazeWM
+
+| Hotkey | Action |
+|--------|--------|
 | Alt+hjkl | Focus window |
 | Alt+1-9 | Switch workspace |
 | Alt+Shift+1-9 | Move window to workspace |
 | Alt+Shift+R | Reload GlazeWM |
-| Ctrl+Alt+Q | Exit amphetamine |
 
 ## Notes
 
