@@ -45,9 +45,6 @@ LoadWallpaperConfig() {
     }
 }
 
-; Hotkey to toggle launcher (Alt+W)
-!w::ToggleWallpaperLauncher()
-
 ; Function to show/hide launcher
 ToggleWallpaperLauncher() {
     global wallpaperVisible

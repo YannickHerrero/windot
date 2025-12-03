@@ -69,9 +69,6 @@ LoadWebsiteConfig() {
     })
 }
 
-; Hotkey to toggle launcher (Alt+Space)
-!Space::ToggleWebsiteLauncher()
-
 ; Function to show/hide launcher
 ToggleWebsiteLauncher() {
     global websiteVisible

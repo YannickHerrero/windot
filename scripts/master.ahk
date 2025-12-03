@@ -22,5 +22,11 @@ LoadThemeConfig()
 #Include "wallpaper-launcher.ahk"
 #Include "amphetamine.ahk"
 
+; Keybinds
+!Enter::ToggleTerminalLauncher()
+!Space::ToggleWebsiteLauncher()
+!w::ToggleWallpaperLauncher()
+^!a::ToggleAmphetamine()
+
 ; Keep script running with tray icon
 Persistent

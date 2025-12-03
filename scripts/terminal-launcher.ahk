@@ -57,9 +57,6 @@ LoadTerminalConfig() {
     }
 }
 
-; Hotkey to toggle launcher (Alt+Enter)
-!Enter::ToggleTerminalLauncher()
-
 ; Function to show/hide launcher
 ToggleTerminalLauncher() {
     global terminalVisible
