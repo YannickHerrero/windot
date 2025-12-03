@@ -71,7 +71,7 @@ All launchers are consolidated into a single `master.ahk` script with shared lib
 - Enabled by default on startup
 
 **Help Window (Alt+?)**
-- Shows all available keyboard shortcuts
+- Shows AutoHotkey and GlazeWM keyboard shortcuts
 - Displays amphetamine status (ON/OFF)
 
 ### GlazeWM Configuration
