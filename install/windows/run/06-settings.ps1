@@ -130,6 +130,45 @@ Set-ItemProperty -Path $siufPath -Name "NumberOfSIUFInPeriod" -Value 0
 Write-Host "[SET] Disabled feedback prompts" -ForegroundColor Green
 
 # ============================================================
+# WALLPAPER
+# ============================================================
+Write-Host ""
+Write-Host "Setting wallpaper..." -ForegroundColor Cyan
+
+# Source wallpaper relative to repo root (script is in install/windows/run/)
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $ScriptDir))
+$SourcePath = Join-Path $RepoRoot "theme\walls\cat_leaves.png"
+$DestPath = Join-Path $env:USERPROFILE "Pictures\Wallpapers"
+$WallpaperPath = Join-Path $DestPath "cat_leaves.png"
+
+# Create destination folder if it doesn't exist
+if (-not (Test-Path $DestPath)) {
+    New-Item -Path $DestPath -ItemType Directory -Force | Out-Null
+}
+
+# Copy wallpaper to Windows
+if (Test-Path $SourcePath) {
+    Copy-Item -Path $SourcePath -Destination $WallpaperPath -Force
+    Write-Host "[SET] Copied wallpaper to $WallpaperPath" -ForegroundColor Green
+
+    # Set wallpaper using Windows API
+    Add-Type -TypeDefinition @"
+    using System;
+    using System.Runtime.InteropServices;
+    public class Wallpaper {
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+    }
+"@
+    # SPI_SETDESKWALLPAPER = 0x0014, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE = 0x03
+    [Wallpaper]::SystemParametersInfo(0x0014, 0, $WallpaperPath, 0x03) | Out-Null
+    Write-Host "[SET] Applied cat_leaves wallpaper" -ForegroundColor Green
+} else {
+    Write-Host "[SKIP] Wallpaper not found: $SourcePath" -ForegroundColor Yellow
+}
+
+# ============================================================
 # RESTART EXPLORER
 # ============================================================
 Write-Host ""
