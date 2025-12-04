@@ -152,6 +152,13 @@ Located in `standalone/firefox/` (requires manual setup):
 4. **Start AutoHotkey scripts:**
    Run `master.ahk` from `C:\Users\<username>\scripts\` (single script handles all launchers)
 
+### Troubleshooting
+
+**PowerShell scripts won't run**: If you get an error about execution policy, run PowerShell as Administrator and execute:
+```powershell
+Set-ExecutionPolicy RemoteSigned
+```
+
 ## Keybindings
 
 ### AutoHotkey Launchers

@@ -3,6 +3,44 @@
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RunDir = Join-Path $ScriptDir "run"
 
+# Check and install WinGet if not available
+# Reference: https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
+function Ensure-WinGet {
+    $wingetAvailable = Get-Command winget -ErrorAction SilentlyContinue
+    if ($wingetAvailable) {
+        Write-Host "[OK] WinGet is already installed" -ForegroundColor Green
+        return
+    }
+
+    Write-Host "[INSTALL] WinGet not found, installing..." -ForegroundColor Yellow
+    $progressPreference = 'silentlyContinue'
+
+    Write-Host "  Installing NuGet package provider..."
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force:$true | Out-Null
+
+    Write-Host "  Installing Microsoft.WinGet.Client module..."
+    Install-Module Microsoft.WinGet.Client -Force:$true -Confirm:$false | Out-Null
+
+    Write-Host "  Importing Microsoft.WinGet.Client module..."
+    Import-Module Microsoft.WinGet.Client
+
+    Write-Host "  Repairing WinGet package manager..."
+    Repair-WinGetPackageManager -Force:$true -Latest
+
+    # Verify installation
+    $wingetAvailable = Get-Command winget -ErrorAction SilentlyContinue
+    if ($wingetAvailable) {
+        Write-Host "[OK] WinGet installed successfully" -ForegroundColor Green
+    } else {
+        Write-Host "[ERROR] WinGet installation failed" -ForegroundColor Red
+        exit 1
+    }
+}
+
+# Ensure WinGet is available before proceeding
+Ensure-WinGet
+Write-Host ""
+
 # Find all install scripts in run directory
 $InstallScripts = Get-ChildItem -Path $RunDir -Filter "*.ps1" | Sort-Object Name
 
