@@ -64,6 +64,15 @@ secrets.json
 CLAUDE.md
 .claude/
 
+# Node.js / React
+node_modules/
+dist/
+build/
+package-lock.json
+.npm
+.eslintcache
+.cache/
+
 # Large media files (keep wallpapers tracked)
 # If walls/ gets too big, uncomment:
 # *.png
