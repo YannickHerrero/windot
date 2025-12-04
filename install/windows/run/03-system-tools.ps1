@@ -19,5 +19,6 @@ Write-Host "Installing system tools..."
 Install-WingetPackage -PackageId "Microsoft.PowerToys" -Name "PowerToys"
 Install-WingetPackage -PackageId "MartiCliment.UniGetUI" -Name "UniGetUI"
 Install-WingetPackage -PackageId "RamenSoftware.Windhawk" -Name "Windhawk"
+Install-WingetPackage -PackageId "AutoHotkey.AutoHotkey" -Name "AutoHotkey"
 
 Write-Host "System tools installation complete!"
