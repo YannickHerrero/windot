@@ -100,11 +100,9 @@ body,
   padding-right: 16px;
 }
 
-.logo,
 .binding-mode,
 .tiling-direction,
 .paused-button,
-.network,
 .memory,
 .cpu {
   margin-right: 20px;
