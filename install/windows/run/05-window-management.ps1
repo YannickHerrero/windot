@@ -10,7 +10,7 @@ function Install-WingetPackage {
         Write-Host "[SKIP] $Name already installed" -ForegroundColor Yellow
     } else {
         Write-Host "[INSTALL] $Name" -ForegroundColor Green
-        winget install --id $PackageId --accept-source-agreements --accept-package-agreements
+        winget install --id $PackageId --source winget --accept-source-agreements --accept-package-agreements
     }
 }
 
