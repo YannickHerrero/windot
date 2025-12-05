@@ -19,13 +19,13 @@ LoadThemeConfig()
 
 ; Include all launchers
 #Include "terminal-launcher.ahk"
-#Include "website-launcher.ahk"
+#Include "quick-launcher.ahk"
 #Include "wallpaper-launcher.ahk"
 #Include "amphetamine.ahk"
 
 ; Keybinds
 !Enter::ToggleTerminalLauncher()
-!Space::ToggleWebsiteLauncher()
+!Space::ToggleQuickLauncher()
 !w::ToggleWallpaperLauncher()
 ^!a::ToggleAmphetamine()
 !+/::ToggleHelpWindow()

@@ -52,7 +52,7 @@ ShowHelpWindow() {
     ; AutoHotkey shortcuts
     ahkShortcuts := [
         ["Alt + Enter", "Terminal Launcher"],
-        ["Alt + Space", "Website Launcher"],
+        ["Alt + Space", "Quick Launcher"],
         ["Alt + W", "Wallpaper Selector"],
         ["Ctrl + Alt + A", "Toggle Amphetamine"],
         ["Alt + ?", "This Help Window"]

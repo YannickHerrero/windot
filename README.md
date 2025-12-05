@@ -55,10 +55,12 @@ All launchers are consolidated into a single `master.ahk` script with shared lib
 - Auto-scans `~/dev/` for projects
 - Static entries from `config/folders.ini`
 
-**Website Launcher (Alt+Space)**
-- Launches web apps in Chrome app mode
-- Supports Chrome, Vivaldi, Brave, and Edge
-- Entries configured in `config/websites.ini`
+**Quick Launcher (Alt+Space)**
+- Launches web apps, applications, and folders
+- Web apps open in Chrome app mode (Chrome, Vivaldi, Brave, Edge)
+- Obsidian vaults open directly
+- Folders open in File Explorer
+- Entries configured in `config/launcher.ini`
 
 **Wallpaper Selector (Alt+W)**
 - Fuzzy-find wallpaper selector with live preview
@@ -166,7 +168,7 @@ Set-ExecutionPolicy RemoteSigned
 | Hotkey | Action |
 |--------|--------|
 | Alt+Enter | Terminal launcher |
-| Alt+Space | Website launcher |
+| Alt+Space | Quick launcher |
 | Alt+W | Wallpaper selector |
 | Ctrl+Alt+A | Toggle amphetamine |
 | Alt+? | Help window |
