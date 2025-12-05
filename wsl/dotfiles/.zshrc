@@ -4,6 +4,15 @@ export PATH="/snap/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+# WezTerm shell integration - emit OSC 7 for CWD tracking
+if [[ -n "$WEZTERM_PANE" ]]; then
+  __wezterm_osc7() {
+    printf '\033]7;file://%s%s\033\\' "${HOSTNAME}" "${PWD}"
+  }
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd __wezterm_osc7
+fi
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 

@@ -18,13 +18,13 @@ global config := Map()
 LoadThemeConfig()
 
 ; Include all launchers
-#Include "terminal-launcher.ahk"
 #Include "quick-launcher.ahk"
 #Include "wallpaper-launcher.ahk"
 #Include "amphetamine.ahk"
+#Include "terminal-launcher.ahk"
 
 ; Keybinds
-!Enter::ToggleTerminalLauncher()
+!Enter::LaunchTerminalInCwd()
 !Space::ToggleQuickLauncher()
 !w::ToggleWallpaperLauncher()
 ^!a::ToggleAmphetamine()

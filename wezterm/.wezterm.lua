@@ -1,4 +1,16 @@
 local wezterm = require("wezterm")
+local act = wezterm.action
+
+-- Format window title to include CWD for external scripts
+wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+  local cwd = pane.current_working_dir
+  if cwd then
+    -- cwd is a URL object, convert to string
+    cwd = cwd.file_path or tostring(cwd)
+    return "WezTerm: " .. cwd
+  end
+  return "WezTerm"
+end)
 
 return {
   front_end = "OpenGL",
@@ -16,4 +28,9 @@ return {
     },
   },
   default_domain = "WSL:Ubuntu",
+
+  -- Disable Alt+Enter so it passes through to AutoHotkey
+  keys = {
+    { key = "Enter", mods = "ALT", action = act.DisableDefaultAssignment },
+  },
 }
