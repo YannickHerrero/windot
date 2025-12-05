@@ -51,16 +51,17 @@ Individual sync scripts:
 All launchers are consolidated into a single `master.ahk` script with shared libraries. Uses Catppuccin Mocha theming and fuzzy-find filtering.
 
 **Terminal Launcher (Alt+Enter)**
-- Opens WezTerm in selected project folder
-- Auto-scans `~/dev/` for projects
-- Static entries from `config/folders.ini`
+- Opens a new WezTerm terminal in the current directory
+- If focused on WezTerm: new terminal opens in same directory
+- If focused on other window: new terminal opens in home directory
 
 **Quick Launcher (Alt+Space)**
-- Launches web apps, applications, and folders
+- Unified launcher for websites, apps, folders, and terminal paths
 - Web apps open in Chrome app mode (Chrome, Vivaldi, Brave, Edge)
+- Terminal paths open in WezTerm (auto-scans `~/dev/`)
 - Obsidian vaults open directly
 - Folders open in File Explorer
-- Entries configured in `config/launcher.ini`
+- Config split into `config/web.ini`, `apps.ini`, `folders.ini`, `terminal.ini`
 
 **Wallpaper Selector (Alt+W)**
 - Fuzzy-find wallpaper selector with live preview
@@ -167,7 +168,7 @@ Set-ExecutionPolicy RemoteSigned
 
 | Hotkey | Action |
 |--------|--------|
-| Alt+Enter | Terminal launcher |
+| Alt+Enter | New terminal in current directory |
 | Alt+Space | Quick launcher |
 | Alt+W | Wallpaper selector |
 | Ctrl+Alt+A | Toggle amphetamine |

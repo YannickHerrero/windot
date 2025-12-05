@@ -51,7 +51,7 @@ ShowHelpWindow() {
 
     ; AutoHotkey shortcuts
     ahkShortcuts := [
-        ["Alt + Enter", "Terminal Launcher"],
+        ["Alt + Enter", "New Terminal (CWD)"],
         ["Alt + Space", "Quick Launcher"],
         ["Alt + W", "Wallpaper Selector"],
         ["Ctrl + Alt + A", "Toggle Amphetamine"],
