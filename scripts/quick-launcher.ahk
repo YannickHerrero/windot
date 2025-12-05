@@ -1,4 +1,4 @@
-; Quick Launcher - Quick access to websites, apps, and folders with fuzzy find
+; Quick Launcher - Unified launcher for websites, apps, folders, and terminal paths
 ; Press Alt+Space to open launcher
 
 ; Global variables (unique names to avoid conflicts)
@@ -16,77 +16,28 @@ LoadLauncherConfig()
 LoadLauncherConfig() {
     global scriptDir, items, config
 
-    ; Read browser executable from config
+    ; Read executables from config
     configFile := scriptDir . "\config\config.ini"
     config["browserExe"] := IniRead(configFile, "Browser", "executable", "")
+    config["terminalExe"] := IniRead(configFile, "Terminal", "executable", "")
 
-    ; Load items from INI
-    launcherFile := scriptDir . "\config\launcher.ini"
-    if (!FileExist(launcherFile)) {
-        MsgBox("Launcher config not found: " launcherFile, "Error", "Icon!")
-        ExitApp()
-    }
+    ; Load websites from web.ini
+    LoadWebsites()
 
-    ; Read all sections from INI file
-    sections := IniRead(launcherFile)
-    for section in StrSplit(sections, "`n") {
-        section := Trim(section)
-        if (section != "") {
-            itemType := IniRead(launcherFile, section, "type", "web")
-            name := IniRead(launcherFile, section, "name", "")
+    ; Load applications from apps.ini
+    LoadApps()
 
-            if (name == "") {
-                continue
-            }
+    ; Load folders from folders.ini
+    LoadFolders()
 
-            switch itemType {
-                case "web":
-                    url := IniRead(launcherFile, section, "url", "")
-                    if (url != "") {
-                        items.Push({
-                            name: name,
-                            displayName: "[CHR] " . name,
-                            url: url,
-                            type: "web"
-                        })
-                    }
-                case "app":
-                    path := IniRead(launcherFile, section, "path", "")
-                    vault := IniRead(launcherFile, section, "vault", "")
-                    items.Push({
-                        name: name,
-                        displayName: "[App] " . name,
-                        path: path,
-                        vault: vault,
-                        type: "app"
-                    })
-                case "folder":
-                    path := IniRead(launcherFile, section, "path", "")
-                    if (path != "") {
-                        items.Push({
-                            name: name,
-                            displayName: "[Folder] " . name,
-                            path: path,
-                            type: "folder"
-                        })
-                    }
-            }
-        }
-    }
+    ; Load terminal paths from terminal.ini
+    LoadTerminalPaths()
+
+    ; Auto-scan ~/dev/ for terminal entries
+    ScanDevFolder()
 
     ; Scan Firefox Web Apps folder
-    firefoxAppsPath := "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps"
-    if (DirExist(firefoxAppsPath)) {
-        Loop Files, firefoxAppsPath . "\*.lnk" {
-            appName := RegExReplace(A_LoopFileName, "\.lnk$", "")
-            items.Push({
-                name: appName,
-                displayName: "[FF] " . appName,
-                url: A_LoopFilePath,
-                type: "firefox"
-            })
-        }
-    }
+    LoadFirefoxApps()
 
     ; Add clipboard entry as searchable item
     items.Push({
@@ -95,6 +46,165 @@ LoadLauncherConfig() {
         url: "",
         type: "clipboard"
     })
+}
+
+; Load websites from web.ini
+LoadWebsites() {
+    global scriptDir, items
+
+    webFile := scriptDir . "\config\web.ini"
+    if (!FileExist(webFile)) {
+        return
+    }
+
+    sections := IniRead(webFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            name := IniRead(webFile, section, "name", "")
+            url := IniRead(webFile, section, "url", "")
+
+            if (name != "" && url != "") {
+                items.Push({
+                    name: name,
+                    displayName: "[CHR] " . name,
+                    url: url,
+                    type: "web"
+                })
+            }
+        }
+    }
+}
+
+; Load applications from apps.ini
+LoadApps() {
+    global scriptDir, items
+
+    appsFile := scriptDir . "\config\apps.ini"
+    if (!FileExist(appsFile)) {
+        return
+    }
+
+    sections := IniRead(appsFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            name := IniRead(appsFile, section, "name", "")
+            path := IniRead(appsFile, section, "path", "")
+            vault := IniRead(appsFile, section, "vault", "")
+
+            if (name != "") {
+                items.Push({
+                    name: name,
+                    displayName: "[App] " . name,
+                    path: path,
+                    vault: vault,
+                    type: "app"
+                })
+            }
+        }
+    }
+}
+
+; Load folders from folders.ini
+LoadFolders() {
+    global scriptDir, items
+
+    foldersFile := scriptDir . "\config\folders.ini"
+    if (!FileExist(foldersFile)) {
+        return
+    }
+
+    sections := IniRead(foldersFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            name := IniRead(foldersFile, section, "name", "")
+            path := IniRead(foldersFile, section, "path", "")
+
+            if (name != "" && path != "") {
+                items.Push({
+                    name: name,
+                    displayName: "[Folder] " . name,
+                    path: path,
+                    type: "folder"
+                })
+            }
+        }
+    }
+}
+
+; Load terminal paths from terminal.ini
+LoadTerminalPaths() {
+    global scriptDir, items
+
+    terminalFile := scriptDir . "\config\terminal.ini"
+    if (!FileExist(terminalFile)) {
+        return
+    }
+
+    sections := IniRead(terminalFile)
+    for section in StrSplit(sections, "`n") {
+        section := Trim(section)
+        if (section != "") {
+            name := IniRead(terminalFile, section, "name", "")
+            path := IniRead(terminalFile, section, "path", "")
+            displayPath := IniRead(terminalFile, section, "displayPath", "")
+
+            if (name != "" && path != "") {
+                displayName := "[T] " . name
+                if (displayPath != "") {
+                    displayName .= " (" . displayPath . ")"
+                }
+                items.Push({
+                    name: name,
+                    displayName: displayName,
+                    path: path,
+                    type: "terminal"
+                })
+            }
+        }
+    }
+}
+
+; Auto-scan ~/dev/ folder for terminal entries
+ScanDevFolder() {
+    global items
+
+    devPath := "\\wsl.localhost\Ubuntu\home\yannick\dev"
+    if (!DirExist(devPath)) {
+        return
+    }
+
+    Loop Files, devPath . "\*", "D" {
+        folderName := A_LoopFileName
+        items.Push({
+            name: folderName,
+            displayName: "[T] " . folderName . " (~/dev/" . folderName . ")",
+            path: devPath . "\" . folderName,
+            type: "terminal"
+        })
+    }
+}
+
+; Load Firefox Web Apps
+LoadFirefoxApps() {
+    global items
+
+    firefoxAppsPath := "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps"
+    if (!DirExist(firefoxAppsPath)) {
+        return
+    }
+
+    Loop Files, firefoxAppsPath . "\*.lnk" {
+        appName := RegExReplace(A_LoopFileName, "\.lnk$", "")
+        items.Push({
+            name: appName,
+            displayName: "[FF] " . appName,
+            url: A_LoopFilePath,
+            type: "firefox"
+        })
+    }
 }
 
 ; Function to show/hide launcher
@@ -266,6 +376,8 @@ LaunchSelectedItem() {
                 LaunchApplication(item)
             case "folder":
                 LaunchFolder(item.path)
+            case "terminal":
+                LaunchTerminal(item)
         }
     }
 }
@@ -287,6 +399,38 @@ LaunchApplication(item) {
 ; Launch folder in File Explorer
 LaunchFolder(folderPath) {
     Run('explorer.exe "' folderPath '"')
+}
+
+; Launch terminal with selected path
+LaunchTerminal(item) {
+    global config
+
+    ; Get WezTerm executable path
+    weztermExe := config["terminalExe"]
+
+    ; If not in config, auto-detect
+    if (weztermExe == "" || !FileExist(weztermExe)) {
+        weztermPaths := [
+            EnvGet("ProgramFiles") . "\WezTerm\wezterm-gui.exe",
+            EnvGet("LocalAppData") . "\Programs\WezTerm\wezterm-gui.exe"
+        ]
+
+        weztermExe := ""
+        for path in weztermPaths {
+            if (FileExist(path)) {
+                weztermExe := path
+                break
+            }
+        }
+    }
+
+    if (!weztermExe || !FileExist(weztermExe)) {
+        MsgBox("WezTerm not found!", "Error", "Icon!")
+        return
+    }
+
+    ; Launch WezTerm in the folder
+    Run('"' weztermExe '" start --cwd "' item.path '"')
 }
 
 ; Launch website in Chrome app mode
