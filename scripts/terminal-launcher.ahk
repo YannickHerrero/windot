@@ -41,6 +41,16 @@ ConvertWslPath(path) {
         return path
     }
 
+    ; Windows drive path with leading slash like /C:/Users/... -> C:\Users\...
+    if (RegExMatch(path, "^/([A-Za-z]):/", &driveMatch)) {
+        return driveMatch[1] . ":\" . StrReplace(SubStr(path, 4), "/", "\")
+    }
+
+    ; Windows drive path like C:/Users/... -> C:\Users\...
+    if (RegExMatch(path, "^[A-Za-z]:/")) {
+        return StrReplace(path, "/", "\")
+    }
+
     ; Path like /wsl.localhost/Ubuntu/... - just convert slashes
     if (InStr(path, "wsl.localhost")) {
         return "\" . StrReplace(path, "/", "\")
