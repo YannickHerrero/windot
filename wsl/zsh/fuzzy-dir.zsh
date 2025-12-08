@@ -1,7 +1,30 @@
-# Fuzzy directory finder - cd into selected directory
+# Fuzzy directory finder - cd into selected directory (top-level ~/dev folders only)
 f() {
     local dir
-    dir=$(find /home/$USER/dev /home/$USER/.config -type d \( \
+    dir=$(find /home/$USER/dev -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | \
+    fzf --preview "eza --tree --level=1 --color=always /home/$USER/dev/{}" \
+        --bind 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up')
+    if [ -n "$dir" ]; then
+        cd "/home/$USER/dev/$dir"
+    fi
+}
+
+# Fuzzy directory finder - cd into selected directory (top-level Windows home folders only)
+fw() {
+    local win_home="/mnt/c/Users/yannick.herrero"
+    local dir
+    dir=$(find "$win_home" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | \
+    fzf --preview "eza --tree --level=1 --color=always $win_home/{}" \
+        --bind 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up')
+    if [ -n "$dir" ]; then
+        cd "$win_home/$dir"
+    fi
+}
+
+# Fuzzy directory finder (deep) - cd into selected directory (including subfolders)
+fd() {
+    local dir
+    dir=$(find /home/$USER/dev -type d \( \
         -path "*/node_modules" -o \
         -path "*/.git" -o \
         -path "*/.cache" -o \
@@ -18,7 +41,7 @@ f() {
     \) -prune -o -type d -print | \
     awk -F'/' '{if(NF>=2) print "../"$(NF-1)"/"$NF"\t"$0; else print $0"\t"$0}' | \
     fzf --delimiter='\t' --with-nth=1 \
-        --preview 'ls -la --color=always {2} | grep -vE "node_modules|\.git"' \
+        --preview 'eza --tree --level=1 --color=always {2}' \
         --bind 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up' | \
     cut -f2)
     if [ -n "$dir" ]; then
