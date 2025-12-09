@@ -9,6 +9,7 @@ Personal Windows/WSL configuration files with automated sync scripts for a tilin
 - **Terminal**: [WezTerm](https://wezfurlong.org/wezterm/) - GPU-accelerated terminal emulator
 - **Browser**: Firefox with custom userChrome.css styling
 - **Automation**: AutoHotkey v2 scripts for fuzzy-find launchers
+- **Utilities**: [PowerToys](https://github.com/microsoft/PowerToys) - Keyboard Manager remappings
 - **Editor**: Neovim with LazyVim configuration
 - **Shell**: Zsh with modular configuration
 
@@ -17,6 +18,10 @@ Personal Windows/WSL configuration files with automated sync scripts for a tilin
 ```
 windot/
 ├── glzr/           # GlazeWM & Zebar configs
+├── install/        # Automated install scripts
+│   ├── windows/    # Windows apps via winget
+│   └── wsl/        # WSL packages via apt/scripts
+├── powertoys/      # PowerToys config (Keyboard Manager)
 ├── scripts/        # AutoHotkey launchers
 │   ├── config/     # INI configuration files
 │   └── lib/        # Shared library functions
@@ -41,6 +46,7 @@ Individual sync scripts:
 - `glzr/sync.sh` - GlazeWM + Zebar to `~/.glzr/`
 - `wezterm/sync.sh` - WezTerm config to `~/.wezterm.lua`
 - `scripts/sync.sh` - AutoHotkey scripts to `~/scripts/`
+- `powertoys/sync.sh` - PowerToys config to `%LOCALAPPDATA%\Microsoft\PowerToys`
 - `theme/sync.sh` - Wallpapers to `~/Pictures/Wallpapers/`
 - `wsl/dotfiles/sync.sh` - .zshrc to `~/`
 - `wsl/neovim/sync.sh` - Neovim config to `~/.config/nvim/`
@@ -123,10 +129,62 @@ Located in `standalone/firefox/` (requires manual setup):
 - History settings
 - Tool integrations (fzf, zoxide)
 
+### Install Scripts
+
+Automated installation scripts for setting up a new machine:
+
+**Windows** (`install/windows/install.ps1`):
+- Interactive fzf menu (with fallback) to select scripts
+- Auto-installs WinGet if not available
+- Scripts:
+  - `browsers` - Firefox, Chrome, Brave
+  - `development` - VS Code, Git, WezTerm
+  - `fonts` - JetBrains Mono, Cascadia Code, Nerd Fonts
+  - `system-tools` - PowerToys, UniGetUI, Windhawk, AutoHotkey
+  - `wsl` - WSL2 + Ubuntu
+  - `window-management` - GlazeWM, Zebar
+  - `settings` - Windows appearance, taskbar, explorer, privacy tweaks
+
+**WSL** (`install/wsl/install.sh`):
+- Interactive fzf menu to select scripts
+- Scripts:
+  - `prerequisites` - build-essential, curl, git
+  - `shell` - zsh, oh-my-zsh, starship
+  - `utilities` - fzf, ripgrep, eza, bat, zoxide
+  - `dev-core` - neovim, tmux, docker
+  - `javascript` - nvm, node, bun, pnpm
+  - `lazy-tools` - lazygit, lazydocker
+  - `databases` - postgresql client
+  - `ai` - Claude Code CLI
+  - `misc` - additional tools
+
+### PowerToys
+
+Configuration for Microsoft PowerToys:
+- **Keyboard Manager**: Custom key remappings
+- Sync with `powertoys/sync.sh`
+
 ## Installation
 
-### Prerequisites
+### Option 1: Automated Install (Recommended)
 
+Run the install scripts to set up everything automatically:
+
+```powershell
+# From PowerShell (as Administrator for some packages)
+.\install\windows\install.ps1
+# Select "all" or choose specific categories
+```
+
+```bash
+# From WSL (after Windows install)
+./install/wsl/install.sh
+# Select "all" or choose specific categories
+```
+
+### Option 2: Manual Prerequisites
+
+If you prefer manual installation:
 - Windows 11
 - WSL2 with Ubuntu
 - [GlazeWM](https://github.com/glzr-io/glazewm)
@@ -143,16 +201,26 @@ Located in `standalone/firefox/` (requires manual setup):
    cd ~/dev/windot
    ```
 
-2. **Sync all configurations:**
+2. **Run install scripts (optional):**
+   ```powershell
+   # Windows
+   .\install\windows\install.ps1
+   ```
+   ```bash
+   # WSL
+   ./install/wsl/install.sh
+   ```
+
+3. **Sync all configurations:**
    ```bash
    ./sync.sh
    # Select "all" or choose specific configs
    ```
 
-3. **Reload GlazeWM:**
+4. **Reload GlazeWM:**
    Press `Alt+Shift+R`
 
-4. **Start AutoHotkey scripts:**
+5. **Start AutoHotkey scripts:**
    Run `master.ahk` from `C:\Users\<username>\scripts\` (single script handles all launchers)
 
 ### Troubleshooting
