@@ -1,0 +1,97 @@
+{
+  "description": "Windhawk mod configuration for windot",
+  "mods": {
+    "file-explorer-remove-suffixes": {
+      "enabled": true,
+      "settings": {}
+    },
+    "taskbar-clock-customization": {
+      "enabled": true,
+      "settings": {
+        "ShowSeconds": 0,
+        "TimeFormat": "hh':'mm':'ss tt",
+        "DateFormat": "ddd',' MMM dd yyyy",
+        "WeekdayFormat": "ddd",
+        "TopLine": "-",
+        "BottomLine": "",
+        "MiddleLine": "%weekday%",
+        "TooltipLine": "%web1_full%",
+        "Width": 180,
+        "Height": 60,
+        "TextSpacing": 0,
+        "WebContentsItems": [
+          {
+            "Url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+            "BlockStart": "<item>",
+            "Start": "<title>",
+            "End": "</title>",
+            "MaxLength": 28
+          }
+        ],
+        "WebContentsUpdateInterval": 10,
+        "TimeZones": ["Eastern Standard Time"],
+        "TimeStyle": {
+          "Hidden": 0
+        },
+        "DateStyle": {
+          "Hidden": 1
+        },
+        "oldTaskbarOnWin11": 0,
+        "DataCollection": {
+          "NetworkMetricsFormat": "mbs",
+          "PercentageFormat": "spacePaddingAndSymbol",
+          "UpdateInterval": 1
+        }
+      }
+    },
+    "taskbar-icon-size": {
+      "enabled": true,
+      "settings": {
+        "TaskbarHeight": 36,
+        "IconSize": 18,
+        "TaskbarButtonWidth": 36,
+        "IconSizeSmall": 16,
+        "TaskbarButtonWidthSmall": 32
+      }
+    },
+    "taskbar-vertical": {
+      "enabled": false,
+      "settings": {
+        "taskbarLocation": "left",
+        "TaskbarWidth": 80,
+        "taskbarLocationSecondary": "sameAsPrimary",
+        "jumpListAlignment": "top",
+        "startMenuAlignment": "top"
+      }
+    },
+    "taskbar-volume-control": {
+      "enabled": true,
+      "settings": {
+        "volumeIndicator": "win11",
+        "scrollArea": "taskbar",
+        "middleClickToMute": 1,
+        "volumeChangeStep": 2,
+        "oldTaskbarOnWin11": 0
+      }
+    },
+    "windows-11-notification-center-styler": {
+      "enabled": true,
+      "settings": {
+        "theme": "TranslucentShell"
+      }
+    },
+    "windows-11-start-menu-styler": {
+      "enabled": true,
+      "settings": {
+        "theme": "Down Aero",
+        "disableNewStartMenuLayout": 0
+      }
+    },
+    "windows-11-taskbar-styler": {
+      "enabled": true,
+      "settings": {
+        "theme": "RosePine"
+      }
+    }
+  }
+}
