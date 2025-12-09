@@ -2,6 +2,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/dev/dev-env/scripts/:$PATH"
 export PATH="/snap/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # WezTerm shell integration - emit OSC 7 for CWD tracking
