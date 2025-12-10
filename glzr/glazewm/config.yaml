@@ -4,7 +4,7 @@ general:
   # Example: The below command launches Zebar.
   startup_commands: [
     'shell-exec zebar',
-    'shell-exec C:/Users/yannick.herrero/scripts/master.ahk'
+    'shell-exec C:/Users/%WIN_USER%/scripts/master.ahk'
   ]
 
   # Commands to run just before the WM is shutdown.
@@ -282,7 +282,7 @@ keybindings:
     bindings: ['alt+shift+b']
 
   # Launch DuckDuckGo web app.
-  - commands: ['shell-exec explorer.exe "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps\Duckduckgo.lnk"']
+  - commands: ['shell-exec explorer.exe "C:\Users\%WIN_USER%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps\Duckduckgo.lnk"']
     bindings: ['alt+n']
 
   # Focus the next/previous active workspace defined in `workspaces` config.
@@ -292,7 +292,7 @@ keybindings:
   #   bindings: ['alt+a']
 
   # Launch browser app with Claude AI
-  - commands: ['shell-exec explorer.exe "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps\Claude.lnk"']
+  - commands: ['shell-exec explorer.exe "C:\Users\%WIN_USER%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps\Claude.lnk"']
     bindings: ['alt+a']
 
   # Focus the workspace that last had focus.

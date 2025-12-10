@@ -11,7 +11,8 @@ f() {
 
 # Fuzzy directory finder - cd into selected directory (top-level Windows home folders only)
 fw() {
-    local win_home="/mnt/c/Users/yannick.herrero"
+    local win_user=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+    local win_home="/mnt/c/Users/$win_user"
     local dir
     dir=$(find "$win_home" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | \
     fzf --preview "eza --tree --level=1 --color=always $win_home/{}" \

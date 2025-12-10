@@ -2,7 +2,15 @@
 # Syncs PowerToys config to %LOCALAPPDATA%\Microsoft\PowerToys
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-TARGET_PATH="/mnt/c/Users/yannick.herrero/AppData/Local/Microsoft/PowerToys"
+
+# Auto-detect Windows username
+WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+if [ -z "$WIN_USER" ]; then
+    echo "Error: Could not detect Windows username"
+    exit 1
+fi
+
+TARGET_PATH="/mnt/c/Users/$WIN_USER/AppData/Local/Microsoft/PowerToys"
 
 echo "Syncing PowerToys config..."
 
