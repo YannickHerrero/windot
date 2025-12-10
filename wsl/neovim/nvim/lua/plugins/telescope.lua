@@ -1,7 +1,7 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.5",
+    tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       local builtin = require("telescope.builtin")
@@ -11,7 +11,7 @@ return {
         pickers = {
           find_files = {
             find_command = {
-              "fd",
+              "fdfind",
               "--type",
               "f",
               "--color=never",

@@ -1,5 +1,6 @@
 # Text Editors & Files
 alias v="nvim"
+alias oc="opencode"
 alias ls='ls --color'
 alias bat='batcat'
 alias mkcd='function _mkcd() { mkdir -p "$1" && cd "$1" }; _mkcd'
