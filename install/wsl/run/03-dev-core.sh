@@ -53,7 +53,7 @@ if is_installed nvim; then
     echo -e "${YELLOW}[SKIP]${NC} neovim already installed"
 else
     echo -e "${GREEN}[INSTALL]${NC} neovim v0.11.3"
-    curl -Lo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/download/v0.11.3/nvim.appimage
+    curl -fLo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/download/v0.11.3/nvim-linux-x86_64.appimage
     chmod u+x /tmp/nvim.appimage
     # Extract and install (AppImage may not work directly in WSL)
     cd /tmp
