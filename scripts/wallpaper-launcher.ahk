@@ -10,8 +10,8 @@ global wallpaperSearch := ""
 global wallpaperList := ""
 global previewPic := ""
 
-; Wallpaper folder path (synced location)
-global wallpaperPath := "C:\Users\yannick.herrero\Pictures\Wallpapers"
+; Wallpaper folder path (synced location) - uses WIN_USER from master.ahk
+global wallpaperPath := "C:\Users\" . WIN_USER . "\Pictures\Wallpapers"
 
 ; Load wallpaper configuration
 LoadWallpaperConfig()

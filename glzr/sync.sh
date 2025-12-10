@@ -2,13 +2,21 @@
 # Syncs glzr configs from this repo to Windows locations
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-WIN_GLZR="/mnt/c/Users/yannick.herrero/.glzr"
-ZEBAR_DOWNLOADS="/mnt/c/Users/yannick.herrero/AppData/Roaming/zebar/downloads"
+
+# Auto-detect Windows username
+WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+if [ -z "$WIN_USER" ]; then
+    echo "Error: Could not detect Windows username"
+    exit 1
+fi
+
+WIN_GLZR="/mnt/c/Users/$WIN_USER/.glzr"
+ZEBAR_DOWNLOADS="/mnt/c/Users/$WIN_USER/AppData/Roaming/zebar/downloads"
 
 echo "Syncing glzr configs..."
 
-# Sync glazewm config
-cp "$SCRIPT_DIR/glazewm/config.yaml" "$WIN_GLZR/glazewm/config.yaml"
+# Sync glazewm config (substitute %WIN_USER% placeholder)
+sed "s/%WIN_USER%/$WIN_USER/g" "$SCRIPT_DIR/glazewm/config.yaml" > "$WIN_GLZR/glazewm/config.yaml"
 echo "  - glazewm/config.yaml -> $WIN_GLZR/glazewm/"
 
 # Sync zebar settings

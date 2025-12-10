@@ -8,6 +8,27 @@
 global scriptDir := A_ScriptDir
 global config := Map()
 
+; Auto-detect usernames for dynamic paths
+global WIN_USER := A_UserName
+global WSL_USER := GetWSLUser()
+
+; Get WSL username (tries environment variable, falls back to Windows username without domain)
+GetWSLUser() {
+    ; Try WSL_USER environment variable first
+    user := EnvGet("WSL_USER")
+    if (user != "")
+        return user
+    ; Fallback: use Windows username, strip domain suffix if present
+    return RegExReplace(A_UserName, "\..*$", "")
+}
+
+; Expand path placeholders with actual usernames
+ExpandUserPath(path) {
+    path := StrReplace(path, "%WIN_USER%", WIN_USER)
+    path := StrReplace(path, "%WSL_USER%", WSL_USER)
+    return path
+}
+
 ; Include library functions
 #Include "lib/fuzzy-match.ahk"
 #Include "lib/center-window.ahk"

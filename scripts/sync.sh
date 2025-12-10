@@ -2,7 +2,15 @@
 # Syncs scripts from this repo to Windows scripts location
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-WIN_SCRIPTS="/mnt/c/Users/yannick.herrero/scripts"
+
+# Auto-detect Windows username
+WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+if [ -z "$WIN_USER" ]; then
+    echo "Error: Could not detect Windows username"
+    exit 1
+fi
+
+WIN_SCRIPTS="/mnt/c/Users/$WIN_USER/scripts"
 
 echo "Syncing scripts to $WIN_SCRIPTS..."
 

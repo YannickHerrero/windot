@@ -126,7 +126,7 @@ LoadFolders() {
                 items.Push({
                     name: name,
                     displayName: "[Folder] " . name,
-                    path: path,
+                    path: ExpandUserPath(path),
                     type: "folder"
                 })
             }
@@ -152,14 +152,15 @@ LoadTerminalPaths() {
             displayPath := IniRead(terminalFile, section, "displayPath", "")
 
             if (name != "" && path != "") {
+                expandedDisplayPath := displayPath != "" ? ExpandUserPath(displayPath) : ""
                 displayName := "[T] " . name
-                if (displayPath != "") {
-                    displayName .= " (" . displayPath . ")"
+                if (expandedDisplayPath != "") {
+                    displayName .= " (" . expandedDisplayPath . ")"
                 }
                 items.Push({
                     name: name,
                     displayName: displayName,
-                    path: path,
+                    path: ExpandUserPath(path),
                     type: "terminal"
                 })
             }
@@ -171,7 +172,7 @@ LoadTerminalPaths() {
 ScanDevFolder() {
     global items
 
-    devPath := "\\wsl.localhost\Ubuntu\home\yannick\dev"
+    devPath := "\\wsl.localhost\Ubuntu\home\" . WSL_USER . "\dev"
     if (!DirExist(devPath)) {
         return
     }
@@ -191,7 +192,7 @@ ScanDevFolder() {
 LoadFirefoxApps() {
     global items
 
-    firefoxAppsPath := "C:\Users\yannick.herrero\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps"
+    firefoxAppsPath := "C:\Users\" . WIN_USER . "\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Firefox Web Apps"
     if (!DirExist(firefoxAppsPath)) {
         return
     }
