@@ -4,6 +4,12 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUN_DIR="$SCRIPT_DIR/run"
 
+# Prompt for sudo password upfront and keep it alive
+sudo -v
+while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
+SUDO_KEEP_ALIVE_PID=$!
+trap "kill $SUDO_KEEP_ALIVE_PID 2>/dev/null" EXIT
+
 # Find all install scripts in run directory
 mapfile -t INSTALL_SCRIPTS < <(find "$RUN_DIR" -name "*.sh" -type f | sort)
 
