@@ -1,5 +1,5 @@
 #!/bin/bash
-# WSL Install Script - select and run install scripts via fzf
+# WSL Install Script - select and run install scripts via fzf (or fallback menu)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUN_DIR="$SCRIPT_DIR/run"
@@ -21,8 +21,23 @@ for script in "${INSTALL_SCRIPTS[@]}"; do
     OPTIONS+=("$display_name")
 done
 
-# Show fzf menu
-SELECTION=$(printf '%s\n' "${OPTIONS[@]}" | fzf --prompt="Select install script: " --height=40% --reverse)
+# Show menu (fzf if available, otherwise fallback to numbered list)
+if command -v fzf &> /dev/null; then
+    SELECTION=$(printf '%s\n' "${OPTIONS[@]}" | fzf --prompt="Select install script: " --height=40% --reverse)
+else
+    echo "Select install script:"
+    echo ""
+    for i in "${!OPTIONS[@]}"; do
+        echo "  $i) ${OPTIONS[$i]}"
+    done
+    echo ""
+    read -p "Enter number: " choice
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 0 ] && [ "$choice" -lt ${#OPTIONS[@]} ]; then
+        SELECTION="${OPTIONS[$choice]}"
+    else
+        SELECTION=""
+    fi
+fi
 
 if [ -z "$SELECTION" ]; then
     echo "No selection made."
