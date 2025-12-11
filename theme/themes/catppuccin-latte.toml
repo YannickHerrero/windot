@@ -1,0 +1,18 @@
+[meta]
+name = "Catppuccin Latte"
+id = "latte"
+type = "light"
+wallpaper = "catppuccin-latte.png"
+
+[colors]
+background = "eff1f5"
+primary = "ea76cb"
+accent = "1e66f5"
+text = "4c4f69"
+muted = "9ca0b0"
+border = "ccd0da"
+
+[apps]
+wezterm_scheme = "Catppuccin Latte"
+nvim_flavour = "latte"
+opencode_mode = "light"

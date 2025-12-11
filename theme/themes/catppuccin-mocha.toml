@@ -1,0 +1,18 @@
+[meta]
+name = "Catppuccin Mocha"
+id = "mocha"
+type = "dark"
+wallpaper = "catppuccin.png"
+
+[colors]
+background = "1e1e2e"
+primary = "f5c2e7"
+accent = "89b4fa"
+text = "cdd6f4"
+muted = "6c7086"
+border = "45475a"
+
+[apps]
+wezterm_scheme = "Catppuccin Mocha"
+nvim_flavour = "mocha"
+opencode_mode = "dark"

@@ -9,49 +9,77 @@ global themeVisible := false
 global themeSearch := ""
 global themeList := ""
 
-; Load theme definitions
+; Load theme definitions from INI files
 LoadThemeDefinitions()
 
-; Load available themes
+; Load available themes from config/themes/*.ini
 LoadThemeDefinitions() {
-    global themes
+    global themes, scriptDir
+    themes := []
 
-    ; Catppuccin Mocha (Dark)
-    mochaColors := Map(
-        "background", "1e1e2e",
-        "primary", "f5c2e7",
-        "accent", "89b4fa",
-        "text", "cdd6f4",
-        "muted", "6c7086",
-        "border", "45475a"
-    )
-    themes.Push({
-        name: "Catppuccin Mocha",
-        id: "mocha",
-        type: "dark",
-        colors: mochaColors
-    })
+    ; Scan all INI files in config/themes/
+    themesDir := scriptDir . "\config\themes"
 
-    ; Catppuccin Latte (Light)
-    latteColors := Map(
-        "background", "eff1f5",
-        "primary", "ea76cb",
-        "accent", "1e66f5",
-        "text", "4c4f69",
-        "muted", "9ca0b0",
-        "border", "ccd0da"
-    )
-    themes.Push({
-        name: "Catppuccin Latte",
-        id: "latte",
-        type: "light",
-        colors: latteColors
-    })
+    ; Check if themes directory exists
+    if !DirExist(themesDir) {
+        MsgBox("Theme configuration not found.`n`nPlease run theme/sync.sh to generate theme files.`n`nExpected location: " . themesDir, "Theme Launcher - Setup Required", "Icon!")
+        return
+    }
+
+    ; Scan for INI files
+    themeCount := 0
+    loop files themesDir . "\*.ini" {
+        themeFile := A_LoopFileFullPath
+
+        ; Read meta section
+        name := IniRead(themeFile, "meta", "name", "")
+        id := IniRead(themeFile, "meta", "id", "")
+        type := IniRead(themeFile, "meta", "type", "")
+        wallpaper := IniRead(themeFile, "meta", "wallpaper", "")
+
+        ; Skip invalid themes
+        if (name == "" || id == "") {
+            continue
+        }
+
+        ; Read colors section
+        colors := Map(
+            "background", IniRead(themeFile, "colors", "background", ""),
+            "primary", IniRead(themeFile, "colors", "primary", ""),
+            "accent", IniRead(themeFile, "colors", "accent", ""),
+            "text", IniRead(themeFile, "colors", "text", ""),
+            "muted", IniRead(themeFile, "colors", "muted", ""),
+            "border", IniRead(themeFile, "colors", "border", "")
+        )
+
+        themes.Push({
+            name: name,
+            id: id,
+            type: type,
+            wallpaper: wallpaper,
+            colors: colors
+        })
+        themeCount++
+    }
+
+    ; Show error if no themes found
+    if (themeCount == 0) {
+        MsgBox("No theme files found.`n`nPlease run theme/sync.sh to generate theme files.`n`nExpected location: " . themesDir . "\*.ini", "Theme Launcher - No Themes", "Icon!")
+    }
 }
 
 ; Function to show/hide launcher
 ToggleThemeLauncher() {
-    global themeVisible
+    global themeVisible, themes
+    
+    ; Don't show if no themes loaded
+    if (themes.Length == 0) {
+        LoadThemeDefinitions()
+        if (themes.Length == 0) {
+            return
+        }
+    }
+    
     if (themeVisible) {
         HideThemeLauncher()
     } else {
@@ -216,6 +244,11 @@ ApplySelectedTheme() {
         IniWrite(theme.colors["muted"], configFile, "Theme", "muted")
         IniWrite(theme.colors["border"], configFile, "Theme", "border")
 
+        ; Set wallpaper if specified
+        if (theme.wallpaper != "") {
+            SetThemeWallpaper(theme.wallpaper)
+        }
+
         ; Call WSL script to update other configs (WezTerm, Neovim, OpenCode)
         Run('wsl.exe ~/.local/bin/set-theme.sh "' . theme.id . '"', , "Hide")
 
@@ -226,4 +259,29 @@ ApplySelectedTheme() {
         ; Reload theme config for other AHK scripts
         LoadThemeConfig()
     }
+}
+
+; Set Windows wallpaper (Fill style)
+SetThemeWallpaper(wallpaperName) {
+    ; Build wallpaper path
+    wallpaperPath := "C:\Users\" . EnvGet("USERNAME") . "\Pictures\Wallpapers\" . wallpaperName
+
+    ; Check if file exists
+    if !FileExist(wallpaperPath) {
+        return
+    }
+
+    ; Set wallpaper style to Fill (WallpaperStyle=10, TileWallpaper=0) via registry
+    RegWrite(10, "REG_SZ", "HKCU\Control Panel\Desktop", "WallpaperStyle")
+    RegWrite(0, "REG_SZ", "HKCU\Control Panel\Desktop", "TileWallpaper")
+
+    ; Set wallpaper using SystemParametersInfo (same as wallpaper-launcher.ahk)
+    ; SPI_SETDESKWALLPAPER = 0x0014
+    ; SPIF_UPDATEINIFILE = 0x01
+    ; SPIF_SENDCHANGE = 0x02
+    DllCall("SystemParametersInfoW"
+        , "UInt", 0x0014        ; SPI_SETDESKWALLPAPER
+        , "UInt", 0             ; Not used
+        , "Str", wallpaperPath  ; Path to wallpaper
+        , "UInt", 0x01 | 0x02)  ; SPIF_UPDATEINIFILE | SPIF_SENDCHANGE
 }

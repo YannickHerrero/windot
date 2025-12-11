@@ -1,28 +1,48 @@
 #!/bin/bash
 # Theme Switcher - Updates theme across all applications
-# Usage: set-theme.sh <mocha|latte>
+# Usage: set-theme.sh <theme-id>
 
 set -e
 
-THEME="${1:-mocha}"
+THEME_ID="${1:-mocha}"
 WIN_USER="%WIN_USER%"
+THEME_DIR="$HOME/.config/themes"
 
-# Theme mappings
-case "$THEME" in
-    mocha)
-        WEZTERM_SCHEME="Catppuccin Mocha"
-        NVIM_FLAVOUR="mocha"
-        OPENCODE_MODE="dark"
-        ;;
-    latte)
-        WEZTERM_SCHEME="Catppuccin Latte"
-        NVIM_FLAVOUR="latte"
-        OPENCODE_MODE="light"
-        ;;
-    *)
-        exit 1
-        ;;
-esac
+# Find theme file by ID
+find_theme_file() {
+    local id="$1"
+    for f in "$THEME_DIR"/*.toml; do
+        if [[ -f "$f" ]]; then
+            local file_id
+            file_id=$(python3 -c "import tomllib; print(tomllib.load(open('$f','rb'))['meta']['id'])" 2>/dev/null)
+            if [[ "$file_id" == "$id" ]]; then
+                echo "$f"
+                return 0
+            fi
+        fi
+    done
+    return 1
+}
+
+# Read value from TOML file
+read_toml() {
+    local file="$1"
+    local section="$2"
+    local key="$3"
+    python3 -c "import tomllib; print(tomllib.load(open('$file','rb'))['$section']['$key'])"
+}
+
+# Find the theme file
+THEME_FILE=$(find_theme_file "$THEME_ID")
+if [[ -z "$THEME_FILE" ]]; then
+    echo "Error: Theme '$THEME_ID' not found in $THEME_DIR"
+    exit 1
+fi
+
+# Read app-specific values from TOML
+WEZTERM_SCHEME=$(read_toml "$THEME_FILE" apps wezterm_scheme)
+NVIM_FLAVOUR=$(read_toml "$THEME_FILE" apps nvim_flavour)
+OPENCODE_MODE=$(read_toml "$THEME_FILE" apps opencode_mode)
 
 # Update WezTerm
 WEZTERM_CONFIG="/mnt/c/Users/$WIN_USER/.wezterm.lua"

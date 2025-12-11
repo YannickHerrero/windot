@@ -29,5 +29,11 @@ sed "s/%WIN_USER%/$WIN_USER/g" "$SCRIPT_DIR/set-theme.sh" > "$HOME_DIR/.local/bi
 chmod +x "$HOME_DIR/.local/bin/set-theme.sh"
 echo "  - set-theme.sh"
 
+# Theme definitions (TOML files for set-theme.sh)
+THEME_DIR="$HOME_DIR/.config/themes"
+mkdir -p "$THEME_DIR"
+cp "$SCRIPT_DIR/../../theme/themes/"*.toml "$THEME_DIR/"
+echo "  - theme definitions ($(ls -1 "$THEME_DIR/"*.toml 2>/dev/null | wc -l) themes)"
+
 echo ""
 echo "Done! Run 'source ~/.zshrc' to apply changes."
