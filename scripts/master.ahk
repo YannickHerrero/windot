@@ -41,6 +41,7 @@ LoadThemeConfig()
 ; Include all launchers
 #Include "quick-launcher.ahk"
 #Include "wallpaper-launcher.ahk"
+#Include "theme-launcher.ahk"
 #Include "amphetamine.ahk"
 #Include "terminal-launcher.ahk"
 

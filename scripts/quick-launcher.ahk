@@ -46,6 +46,14 @@ LoadLauncherConfig() {
         url: "",
         type: "clipboard"
     })
+
+    ; Add theme switcher entry
+    items.Push({
+        name: "Theme Switcher",
+        displayName: "[System] Theme Switcher",
+        url: "",
+        type: "theme"
+    })
 }
 
 ; Load websites from web.ini
@@ -379,6 +387,8 @@ LaunchSelectedItem() {
                 LaunchFolder(item.path)
             case "terminal":
                 LaunchTerminal(item)
+            case "theme":
+                ToggleThemeLauncher()
         }
     }
 }
