@@ -1,4 +1,5 @@
 export PATH="$HOME/.local/bin:/snap/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$PATH"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Zinit
