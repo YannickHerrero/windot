@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install dev core: cmake, build-essential, python, docker, neovim
+# Install dev core: cmake, build-essential, python, docker, neovim, mingw-w64, libx11-dev
 
 set -e
 
@@ -61,6 +61,22 @@ else
     sudo mv squashfs-root /opt/nvim
     sudo ln -sf /opt/nvim/AppRun /usr/local/bin/nvim
     rm /tmp/nvim.appimage
+fi
+
+# mingw-w64 (cross-compilation for Windows)
+if is_installed x86_64-w64-mingw32-gcc; then
+    echo -e "${YELLOW}[SKIP]${NC} mingw-w64 already installed"
+else
+    echo -e "${GREEN}[INSTALL]${NC} mingw-w64"
+    sudo apt install -y mingw-w64
+fi
+
+# libx11-dev (X11 development libraries)
+if dpkg -s libx11-dev &> /dev/null; then
+    echo -e "${YELLOW}[SKIP]${NC} libx11-dev already installed"
+else
+    echo -e "${GREEN}[INSTALL]${NC} libx11-dev"
+    sudo apt install -y libx11-dev
 fi
 
 echo "Dev core tools installation complete!"
