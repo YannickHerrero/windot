@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install AI tools: claude-code
+# Install AI tools: claude-code, opencode
 
 set -e
 
@@ -23,6 +23,14 @@ if is_installed claude; then
 else
     echo -e "${GREEN}[INSTALL]${NC} claude-code"
     npm install -g @anthropic-ai/claude-code
+fi
+
+# opencode
+if is_installed opencode; then
+    echo -e "${YELLOW}[SKIP]${NC} opencode already installed"
+else
+    echo -e "${GREEN}[INSTALL]${NC} opencode"
+    curl -fsSL https://opencode.ai/install | bash
 fi
 
 echo "AI tools installation complete!"
