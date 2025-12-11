@@ -8,19 +8,27 @@
   --text-size: 12px;
   --icon-size: 12px;
 
-  --text-color-light: #cdd6f4;
+  /* Catppuccin Latte (light mode) */
+  --text-color-light: #4c4f69;
+  --icon-color-light: #9ca0b0;
+  --background-color-light: #eff1f5;
+  --surface-color-light: #ccd0da;
+  --surface-hover-light: #9ca0b0;
+
+  /* Catppuccin Mocha (dark mode) */
   --text-color-dark: #cdd6f4;
-
-  --icon-color-light: #585b70;
   --icon-color-dark: #585b70;
-
-  --background-color-light: #1e1e2e;
   --background-color-dark: #1e1e2e;
+  --surface-color-dark: #313244;
+  --surface-hover-dark: #585b70;
 }
 
 @media (prefers-color-scheme: light) {
   body {
     color: var(--text-color-light);
+    --surface-color: var(--surface-color-light);
+    --surface-hover: var(--surface-hover-light);
+    --text-color: var(--text-color-light);
   }
 
   i {
@@ -35,6 +43,9 @@
 @media (prefers-color-scheme: dark) {
   body {
     color: var(--text-color-dark);
+    --surface-color: var(--surface-color-dark);
+    --surface-hover: var(--surface-hover-dark);
+    --text-color: var(--text-color-dark);
   }
 
   i {
@@ -118,31 +129,31 @@ body,
 }
 
 .workspace {
-  background: #313244;
+  background: var(--surface-color);
   margin-right: 4px;
   padding: 2px 6px;
-  color: #cdd6f4;
+  color: var(--text-color);
   border: none;
   border-radius: 2px;
   cursor: pointer;
   font-size: 10px;
 
   &.displayed {
-    background: #313244;
+    background: var(--surface-color);
   }
 
   &.focused,
   &:hover {
-    background: #585b70;
-    color: #cdd6f4;
+    background: var(--surface-hover);
+    color: var(--text-color);
   }
 }
 
 .binding-mode,
 .tiling-direction,
 .paused-button {
-  background: #313244;
-  color: #cdd6f4;
+  background: var(--surface-color);
+  color: var(--text-color);
   border-radius: 2px;
   line-height: 1;
   padding: 4px 8px;
