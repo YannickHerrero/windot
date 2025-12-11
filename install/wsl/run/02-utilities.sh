@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install utilities: bat, btop, eza, tldr, fastfetch, fzf
+# Install utilities: bat, btop, eza, tldr, fastfetch, fzf, unzip, zoxide
 
 set -e
 
@@ -12,6 +12,15 @@ is_installed() {
 }
 
 echo "Installing utilities..."
+
+# unzip
+if is_installed unzip; then
+    echo -e "${YELLOW}[SKIP]${NC} unzip already installed"
+else
+    echo -e "${GREEN}[INSTALL]${NC} unzip"
+    sudo apt update
+    sudo apt install -y unzip
+fi
 
 # bat
 if is_installed bat || is_installed batcat; then
@@ -69,6 +78,18 @@ else
     sudo add-apt-repository -y ppa:zhangsongcui3371/fastfetch 2>/dev/null || true
     sudo apt update
     sudo apt install -y fastfetch
+fi
+
+# zoxide (requires cargo from prerequisites)
+if is_installed zoxide; then
+    echo -e "${YELLOW}[SKIP]${NC} zoxide already installed"
+else
+    echo -e "${GREEN}[INSTALL]${NC} zoxide"
+    if is_installed cargo; then
+        cargo install zoxide --locked
+    else
+        echo "cargo not installed, skipping zoxide"
+    fi
 fi
 
 echo "Utilities installation complete!"
