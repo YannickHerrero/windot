@@ -249,6 +249,9 @@ ApplySelectedTheme() {
             SetThemeWallpaper(theme.wallpaper)
         }
 
+        ; Set Windows theme mode (dark/light)
+        SetWindowsThemeMode(theme.type)
+
         ; Call WSL script to update other configs (WezTerm, Neovim, OpenCode)
         Run('wsl.exe ~/.local/bin/set-theme.sh "' . theme.id . '"', , "Hide")
 
@@ -284,4 +287,35 @@ SetThemeWallpaper(wallpaperName) {
         , "UInt", 0             ; Not used
         , "Str", wallpaperPath  ; Path to wallpaper
         , "UInt", 0x01 | 0x02)  ; SPIF_UPDATEINIFILE | SPIF_SENDCHANGE
+}
+
+; Set Windows theme mode (dark/light) for apps and system
+SetWindowsThemeMode(themeType) {
+    ; 0 = Dark mode, 1 = Light mode
+    mode := (themeType == "light") ? 1 : 0
+
+    ; Set app theme (AppsUseLightTheme)
+    RegWrite(mode, "REG_DWORD", "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme")
+
+    ; Set system theme (SystemUsesLightTheme) - taskbar, start menu, etc.
+    RegWrite(mode, "REG_DWORD", "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme")
+
+    ; Broadcast WM_SETTINGCHANGE to notify all windows of theme change
+    ; This avoids restarting Explorer which breaks GlazeWM window management
+    BroadcastThemeChange()
+}
+
+; Broadcast WM_SETTINGCHANGE to notify applications of theme change
+BroadcastThemeChange() {
+    ; WM_SETTINGCHANGE = 0x001A
+    ; HWND_BROADCAST = 0xFFFF
+    ; Send to all top-level windows with "ImmersiveColorSet" to trigger theme refresh
+    DllCall("SendMessageTimeoutW"
+        , "Ptr", 0xFFFF              ; HWND_BROADCAST
+        , "UInt", 0x001A             ; WM_SETTINGCHANGE
+        , "Ptr", 0                   ; wParam
+        , "Str", "ImmersiveColorSet" ; lParam - signals theme/color change
+        , "UInt", 0x0002             ; SMTO_ABORTIFHUNG
+        , "UInt", 5000               ; 5 second timeout
+        , "Ptr*", &result := 0)      ; result (unused)
 }
