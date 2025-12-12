@@ -16,6 +16,18 @@ global wallpaperPath := "C:\Users\" . WIN_USER . "\Pictures\Wallpapers"
 ; Load wallpaper configuration
 LoadWallpaperConfig()
 
+; Register theme change callback to recreate GUI with new colors
+RegisterThemeChangeCallback(OnWallpaperLauncherThemeChange)
+
+OnWallpaperLauncherThemeChange() {
+    global wallpaperGui, wallpaperVisible
+    if (wallpaperGui) {
+        wallpaperGui.Destroy()
+        wallpaperGui := ""
+        wallpaperVisible := false
+    }
+}
+
 ; Load wallpapers from folder
 LoadWallpaperConfig() {
     global scriptDir, wallpapers, config, wallpaperPath

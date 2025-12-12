@@ -4,6 +4,18 @@
 global helpGui := ""
 global helpVisible := false
 
+; Register theme change callback to recreate GUI with new colors
+RegisterThemeChangeCallback(OnHelpWindowThemeChange)
+
+OnHelpWindowThemeChange() {
+    global helpGui, helpVisible
+    if (helpGui) {
+        helpGui.Destroy()
+        helpGui := ""
+        helpVisible := false
+    }
+}
+
 ; Toggle help window
 ToggleHelpWindow() {
     global helpVisible

@@ -12,6 +12,18 @@ global themeList := ""
 ; Load theme definitions from INI files
 LoadThemeDefinitions()
 
+; Register theme change callback to recreate GUI with new colors
+RegisterThemeChangeCallback(OnThemeLauncherThemeChange)
+
+OnThemeLauncherThemeChange() {
+    global themeGui, themeVisible
+    if (themeGui) {
+        themeGui.Destroy()
+        themeGui := ""
+        themeVisible := false
+    }
+}
+
 ; Load available themes from config/themes/*.ini
 LoadThemeDefinitions() {
     global themes, scriptDir
@@ -255,12 +267,8 @@ ApplySelectedTheme() {
         ; Call WSL script to update other configs (WezTerm, Neovim, OpenCode)
         Run('wsl.exe ~/.local/bin/set-theme.sh "' . theme.id . '"', , "Hide")
 
-        ; Destroy GUI so it will be recreated with new colors next time
-        themeGui.Destroy()
-        themeGui := ""
-
-        ; Reload theme config for other AHK scripts
-        LoadThemeConfig()
+        ; Reload theme config and notify all launchers to recreate their GUIs
+        ReloadTheme()
     }
 }
 

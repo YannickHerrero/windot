@@ -1,4 +1,24 @@
 ; Load theme and GUI configuration from config.ini
+; Includes a callback system for theme change notifications
+
+global themeChangeCallbacks := []
+
+; Register a callback to be called when theme changes
+; Callback should be a function that takes no parameters
+RegisterThemeChangeCallback(callback) {
+    global themeChangeCallbacks
+    themeChangeCallbacks.Push(callback)
+}
+
+; Notify all registered callbacks that theme has changed
+NotifyThemeChange() {
+    global themeChangeCallbacks
+    for callback in themeChangeCallbacks {
+        callback()
+    }
+}
+
+; Load theme and GUI config from INI file
 LoadThemeConfig() {
     global scriptDir, config
 
@@ -25,4 +45,10 @@ LoadThemeConfig() {
         "fontSize", IniRead(configFile, "GUI", "fontSize", "11"),
         "titleSize", IniRead(configFile, "GUI", "titleSize", "13")
     )
+}
+
+; Reload theme config and notify all registered callbacks
+ReloadTheme() {
+    LoadThemeConfig()
+    NotifyThemeChange()
 }
