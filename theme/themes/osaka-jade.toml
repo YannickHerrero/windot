@@ -1,0 +1,91 @@
+[meta]
+name = "Osaka Jade"
+id = "osaka-jade"
+type = "dark"
+wallpaper = "osaka-jade.jpg"
+
+[colors]
+# Core UI colors (for AHK scripts, general use)
+background = "111c18"
+foreground = "C1C497"
+primary = "71CEAD"
+accent = "2DD5B7"
+text = "C1C497"
+muted = "53685B"
+border = "23372B"
+
+[colors.cursor]
+foreground = "000000"
+background = "D7C995"
+
+[colors.selection]
+foreground = "111c18"
+background = "C1C497"
+
+[colors.terminal]
+# ANSI 16-color palette
+black = "23372B"
+red = "FF5345"
+green = "549E6A"
+yellow = "459451"
+blue = "509475"
+magenta = "D2689C"
+cyan = "2DD5B7"
+white = "F6F5DD"
+bright_black = "53685B"
+bright_red = "DB9F9C"
+bright_green = "63B07A"
+bright_yellow = "E5C736"
+bright_blue = "ACD4CF"
+bright_magenta = "75BBB3"
+bright_cyan = "8CD3CB"
+bright_white = "9EEBB3"
+
+[colors.base16]
+# Base16 palette (Neovim, syntax highlighting)
+base00 = "111c18"  # Default Background
+base01 = "1a2a23"  # Lighter Background
+base02 = "23372B"  # Selection Background
+base03 = "53685B"  # Comments, Invisibles
+base04 = "C1C497"  # Dark Foreground
+base05 = "C1C497"  # Default Foreground
+base06 = "F6F5DD"  # Light Foreground
+base07 = "9EEBB3"  # Lightest Foreground
+base08 = "FF5345"  # Variables, Errors
+base09 = "E5C736"  # Integers, Constants
+base0A = "D7C995"  # Classes, Search BG
+base0B = "549E6A"  # Strings
+base0C = "2DD5B7"  # Support, Regex
+base0D = "509475"  # Functions, Methods
+base0E = "D2689C"  # Keywords
+base0F = "75BBB3"  # Deprecated, Embedded
+
+[apps.ohmyposh]
+# Semantic colors for prompt
+path = "71CEAD"
+prompt = "2DD5B7"
+prompt_error = "FF5345"
+git_branch = "53685B"
+git_status = "549E6A"
+duration = "E5C736"
+
+[apps.opencode]
+primary = "71CEAD"
+secondary = "2DD5B7"
+accent = "549E6A"
+error = "FF5345"
+warning = "E5C736"
+success = "549E6A"
+info = "509475"
+text = "C1C497"
+textMuted = "53685B"
+background = "111c18"
+backgroundPanel = "1a2a23"
+backgroundElement = "23372B"
+border = "23372B"
+borderActive = "71CEAD"
+borderSubtle = "1a2a23"
+
+[apps.glazewm]
+border_focused = "71CEAD"
+border_unfocused = "23372B"
