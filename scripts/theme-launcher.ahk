@@ -77,6 +77,59 @@ LoadThemeDefinitions() {
     ; Show error if no themes found
     if (themeCount == 0) {
         MsgBox("No theme files found.`n`nPlease run theme/sync.sh to generate theme files.`n`nExpected location: " . themesDir . "\*.ini", "Theme Launcher - No Themes", "Icon!")
+        return
+    }
+
+    ; Sort themes: light themes first, then dark themes, alphabetically within each group
+    SortThemesByType()
+}
+
+; Sort themes array: light themes first, dark themes second, alphabetical within groups
+SortThemesByType() {
+    global themes
+
+    lightThemes := []
+    darkThemes := []
+
+    ; Separate by type
+    for theme in themes {
+        if (theme.type == "light") {
+            lightThemes.Push(theme)
+        } else {
+            darkThemes.Push(theme)
+        }
+    }
+
+    ; Sort each group alphabetically by name
+    SortThemesAlphabetically(&lightThemes)
+    SortThemesAlphabetically(&darkThemes)
+
+    ; Rebuild themes array: light first, then dark
+    themes := []
+    for theme in lightThemes {
+        themes.Push(theme)
+    }
+    for theme in darkThemes {
+        themes.Push(theme)
+    }
+}
+
+; Sort themes array alphabetically by name (insertion sort)
+SortThemesAlphabetically(&arr) {
+    if (arr.Length <= 1) {
+        return
+    }
+
+    loop arr.Length - 1 {
+        i := A_Index + 1
+        key := arr[i]
+        j := i - 1
+
+        while (j >= 1 && StrCompare(arr[j].name, key.name, "Locale") > 0) {
+            arr[j + 1] := arr[j]
+            j--
+        }
+        arr[j + 1] := key
     }
 }
 
