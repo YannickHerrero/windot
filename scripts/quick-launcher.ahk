@@ -12,6 +12,18 @@ global launcherList := ""
 ; Load launcher configuration
 LoadLauncherConfig()
 
+; Register theme change callback to recreate GUI with new colors
+RegisterThemeChangeCallback(OnQuickLauncherThemeChange)
+
+OnQuickLauncherThemeChange() {
+    global launcherGui, launcherVisible
+    if (launcherGui) {
+        launcherGui.Destroy()
+        launcherGui := ""
+        launcherVisible := false
+    }
+}
+
 ; Load items from config files
 LoadLauncherConfig() {
     global scriptDir, items, config
