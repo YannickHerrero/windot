@@ -23,6 +23,13 @@ mkdir -p "$HOME_DIR/.config/ohmyposh"
 cp "$SCRIPT_DIR/ohmyposh/"* "$HOME_DIR/.config/ohmyposh/"
 echo "  - ohmyposh config"
 
+# Theme helper scripts
+DOTFILES_DIR="$HOME_DIR/.config/dotfiles"
+mkdir -p "$DOTFILES_DIR/theme-scripts"
+cp "$SCRIPT_DIR/theme-scripts/"*.sh "$DOTFILES_DIR/theme-scripts/"
+chmod +x "$DOTFILES_DIR/theme-scripts/"*.sh
+echo "  - theme-scripts ($(ls -1 "$DOTFILES_DIR/theme-scripts/"*.sh 2>/dev/null | wc -l) scripts)"
+
 # Theme switcher script (with placeholder replacement)
 mkdir -p "$HOME_DIR/.local/bin"
 sed "s/%WIN_USER%/$WIN_USER/g" "$SCRIPT_DIR/set-theme.sh" > "$HOME_DIR/.local/bin/set-theme.sh"
