@@ -194,7 +194,9 @@ PopulateThemeList(filter := "") {
     for theme in themes {
         ; Fuzzy match filter (name only)
         if (filter == "" || FuzzyMatch(theme.name, filter)) {
-            themeList.Add("", theme.name . " (" . theme.type . ")")
+            ; Use kanji prefix: 月 (moon) for dark, 日 (sun) for light
+            prefix := (theme.type == "light") ? "日 " : "月 "
+            themeList.Add("", prefix . theme.name)
             filteredThemes.Push(theme)
         }
     }
