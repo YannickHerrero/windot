@@ -196,7 +196,7 @@ ShowThemeLauncher() {
 
         ; Add list view with custom colors
         themeGui.SetFont("s" fontSize " c" txt, font)
-        themeList := themeGui.Add("ListView", "x20 y135 w360 h150 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
+        themeList := themeGui.Add("ListView", "x20 y135 w360 h200 -Hdr -Multi -E0x200 Background" bg " c" txt, ["Name"])
         themeList.OnEvent("DoubleClick", (*) => ApplySelectedTheme())
 
         ; Populate initial list
