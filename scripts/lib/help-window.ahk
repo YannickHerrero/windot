@@ -65,9 +65,7 @@ ShowHelpWindow() {
     ahkShortcuts := [
         ["Alt + Enter", "New Terminal (CWD)"],
         ["Alt + Space", "Quick Launcher"],
-        ["Alt + W", "Wallpaper Selector"],
-        ["Ctrl + Alt + A", "Toggle Amphetamine"],
-        ["Alt + ?", "This Help Window"]
+        ["Shift + Alt + Space", "Omakase Launcher"]
     ]
 
     yPos := 60
@@ -138,7 +136,7 @@ ShowHelpWindow() {
         ["Alt + Q", "Close window"],
         ["Alt + F", "Fullscreen"],
         ["Alt + T", "Toggle tiling"],
-        ["Alt + Shift + Space", "Toggle floating"],
+        ["Alt + Shift + T", "Toggle floating"],
         ["Alt + R", "Tiling direction"],
         ["Alt + V", "Resize mode"]
     ]

@@ -44,13 +44,12 @@ LoadThemeConfig()
 #Include "theme-launcher.ahk"
 #Include "amphetamine.ahk"
 #Include "terminal-launcher.ahk"
+#Include "omakase-launcher.ahk"
 
 ; Keybinds
 !Enter::LaunchTerminalInCwd()
 !Space::ToggleQuickLauncher()
-!w::ToggleWallpaperLauncher()
-^!a::ToggleAmphetamine()
-!+/::ToggleHelpWindow()
+!+Space::ToggleOmakaseLauncher()
 
 ; Keep script running with tray icon
 Persistent

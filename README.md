@@ -57,6 +57,14 @@ Individual sync scripts:
 
 All launchers are consolidated into a single `master.ahk` script with shared libraries. Uses Catppuccin Mocha theming and fuzzy-find filtering.
 
+**Omakase Launcher (Shift+Alt+Space)**
+- Meta-launcher providing access to all AHK utilities:
+  - Quick Launcher
+  - Wallpaper Selector
+  - Theme Switcher
+  - Help Window
+  - Amphetamine Toggle (shows current ON/OFF status)
+
 **Terminal Launcher (Alt+Enter)**
 - Opens a new WezTerm terminal in the current directory
 - If focused on WezTerm: new terminal opens in same directory
@@ -70,17 +78,21 @@ All launchers are consolidated into a single `master.ahk` script with shared lib
 - Folders open in File Explorer
 - Config split into `config/web.ini`, `apps.ini`, `folders.ini`, `terminal.ini`
 
-**Wallpaper Selector (Alt+W)**
+**Wallpaper Selector** (via Omakase)
 - Fuzzy-find wallpaper selector with live preview
 - Scans `~/Pictures/Wallpapers/`
 - Sets desktop wallpaper instantly
 
-**Amphetamine (Ctrl+Alt+A)**
+**Theme Switcher** (via Omakase)
+- Switch between themes (Catppuccin Mocha, Latte, etc.)
+- Updates Windows dark/light mode, wallpaper, and app configs
+
+**Amphetamine** (via Omakase)
 - Prevents screen lock with natural mouse movement
 - Toggle on/off with tooltip feedback
 - Enabled by default on startup
 
-**Help Window (Alt+?)**
+**Help Window** (via Omakase)
 - Shows AutoHotkey and GlazeWM keyboard shortcuts
 - Displays amphetamine status (ON/OFF)
 
@@ -254,9 +266,7 @@ Set-ExecutionPolicy RemoteSigned
 |--------|--------|
 | Alt+Enter | New terminal in current directory |
 | Alt+Space | Quick launcher |
-| Alt+W | Wallpaper selector |
-| Ctrl+Alt+A | Toggle amphetamine |
-| Alt+? | Help window |
+| Shift+Alt+Space | Omakase launcher (utilities menu) |
 
 ### GlazeWM
 
