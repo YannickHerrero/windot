@@ -1,0 +1,91 @@
+[meta]
+name = "Rose of Dune"
+id = "roseofdune"
+type = "light"
+wallpaper = "rose-of-dune.jpg"
+
+[colors]
+# Core UI colors (for AHK scripts, general use)
+background = "F5E6D3"
+foreground = "35302a"
+primary = "b76e79"
+accent = "AD9980"
+text = "35302a"
+muted = "6F4C3E"
+border = "EBD1B8"
+
+[colors.cursor]
+foreground = "35302a"
+background = "b76e79"
+
+[colors.selection]
+foreground = "35302a"
+background = "b76e79"
+
+[colors.terminal]
+# ANSI 16-color palette
+black = "F5E6D3"
+red = "a02b16"
+green = "b76e79"
+yellow = "644535"
+blue = "AD9980"
+magenta = "b76e81"
+cyan = "3b3b28"
+white = "DEA193"
+bright_black = "6F4C3E"
+bright_red = "a02b16"
+bright_green = "b76e79"
+bright_yellow = "694C45"
+bright_blue = "AD9980"
+bright_magenta = "b76e81"
+bright_cyan = "3b3b28"
+bright_white = "DEA193"
+
+[colors.base16]
+# Base16 palette (Neovim, syntax highlighting)
+base00 = "F5E6D3"  # Default Background
+base01 = "EBD1B8"  # Lighter Background
+base02 = "EBD1B8"  # Selection Background
+base03 = "7A6A57"  # Comments, Invisibles
+base04 = "6B5843"  # Dark Foreground
+base05 = "3C2B20"  # Default Foreground
+base06 = "2B1E15"  # Light Foreground
+base07 = "E6D1C2"  # Lightest Foreground
+base08 = "B34438"  # Variables, Errors
+base09 = "D9A06B"  # Integers, Constants
+base0A = "D28C74"  # Classes, Search BG
+base0B = "B88642"  # Strings
+base0C = "7CA973"  # Support, Regex
+base0D = "C87C6A"  # Functions, Methods
+base0E = "B36E5B"  # Keywords
+base0F = "6B5843"  # Deprecated, Embedded
+
+[apps.ohmyposh]
+# Semantic colors for prompt
+path = "AD9980"
+prompt = "D9A06B"
+prompt_error = "B34438"
+git_branch = "7A6A57"
+git_status = "7CA973"
+duration = "B88642"
+
+[apps.opencode]
+primary = "b76e79"
+secondary = "AD9980"
+accent = "7CA973"
+error = "B34438"
+warning = "D9A06B"
+success = "7CA973"
+info = "AD9980"
+text = "35302a"
+textMuted = "7A6A57"
+background = "F5E6D3"
+backgroundPanel = "EBD1B8"
+backgroundElement = "E6D1C2"
+border = "EBD1B8"
+borderActive = "b76e79"
+borderSubtle = "EBD1B8"
+
+[apps.glazewm]
+border_focused = "b76e79"
+border_unfocused = "EBD1B8"
