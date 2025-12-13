@@ -62,6 +62,7 @@ secrets.json
 
 # Claude
 CLAUDE.md
+AGENTS.md
 .claude/
 
 # Node.js / React
