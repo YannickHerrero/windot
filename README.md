@@ -66,9 +66,7 @@ All launchers are consolidated into a single `master.ahk` script with shared lib
   - Amphetamine Toggle (shows current ON/OFF status)
 
 **Terminal Launcher (Alt+Enter)**
-- Opens a new WezTerm terminal in the current directory
-- If focused on WezTerm: new terminal opens in same directory
-- If focused on other window: new terminal opens in home directory
+- Opens a new WezTerm terminal instance
 
 **Quick Launcher (Alt+Space)**
 - Unified launcher for websites, apps, folders, and terminal paths
@@ -264,7 +262,7 @@ Set-ExecutionPolicy RemoteSigned
 
 | Hotkey | Action |
 |--------|--------|
-| Alt+Enter | New terminal in current directory |
+| Alt+Enter | New terminal |
 | Alt+Space | Quick launcher |
 | Shift+Alt+Space | Omakase launcher (utilities menu) |
 
