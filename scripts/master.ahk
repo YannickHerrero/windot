@@ -43,11 +43,11 @@ LoadThemeConfig()
 #Include "wallpaper-launcher.ahk"
 #Include "theme-launcher.ahk"
 #Include "amphetamine.ahk"
-#Include "terminal-launcher.ahk"
+
 #Include "omakase-launcher.ahk"
 
 ; Keybinds
-!Enter::LaunchTerminalInCwd()
+!Enter::Run('"C:\Program Files\WezTerm\wezterm-gui.exe"')
 !Space::ToggleQuickLauncher()
 !+Space::ToggleOmakaseLauncher()
 
