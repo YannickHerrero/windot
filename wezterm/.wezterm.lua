@@ -20,16 +20,6 @@ local function load_colors()
   return nil
 end
 
--- Format window title to include CWD for external scripts
-wezterm.on("format-window-title", function(_, pane)
-  local cwd = pane.current_working_dir
-  if cwd then
-    cwd = cwd.file_path or tostring(cwd)
-    return "WezTerm: " .. cwd
-  end
-  return "WezTerm"
-end)
-
 local config = {
   front_end = "OpenGL",
   font = wezterm.font("JetBrainsMono Nerd Font Mono"),
