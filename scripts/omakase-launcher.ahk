@@ -58,6 +58,12 @@ BuildOmakaseItems() {
         displayName: ampLabel,
         action: "amphetamine"
     })
+
+    omakaseItems.Push({
+        name: "System",
+        displayName: "System",
+        action: "system"
+    })
 }
 
 ; Function to show/hide launcher
@@ -238,6 +244,8 @@ LaunchSelectedOmakaseItem() {
                 ToggleHelpWindow()
             case "amphetamine":
                 ToggleAmphetamine()
+            case "system":
+                ToggleSystemLauncher()
         }
     }
 }

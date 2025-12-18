@@ -43,6 +43,7 @@ LoadThemeConfig()
 #Include "wallpaper-launcher.ahk"
 #Include "theme-launcher.ahk"
 #Include "amphetamine.ahk"
+#Include "system-launcher.ahk"
 
 #Include "omakase-launcher.ahk"
 
