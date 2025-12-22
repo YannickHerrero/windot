@@ -1,206 +1,256 @@
-# Windot - Windows Configuration Files
+# Windot
 
-Personal Windows/WSL configuration files with automated sync scripts for a tiling window manager setup.
+> **For Linux devs who lost the "which OS" argument at work.**
+
+A comprehensive Windows + WSL dotfiles configuration that makes Windows feel less like Windows. Tiling window manager, vim keybindings, fuzzy-find everything, and a theme system that synchronizes colors across your entire setup with a single command.
+
+## Highlights
+
+- **Tiling WM on Windows** — GlazeWM with vim-style navigation (Alt+hjkl), workspaces, and gaps
+- **One-click theme switching** — Change themes across Windows, terminal, Neovim, and shell prompt simultaneously
+- **Fuzzy-find everything** — AutoHotkey launchers for apps, websites, folders, terminal paths, and system utilities
+- **WSL-first workflow** — Zsh, Neovim, and modern CLI tools configured and ready
+- **Automated setup** — Install scripts for both Windows and WSL with interactive menus
+
+## Overview
+
+Windot is a collection of configuration files and scripts for setting up a productive development environment on Windows + WSL. It bridges the gap between Windows native applications and a Linux development workflow, providing a cohesive experience across both environments.
+
+The standout feature is the **cross-platform theme system** — a single theme change propagates to WezTerm, Neovim, Oh My Posh, GlazeWM, Zebar, OpenCode, and even sets the Windows dark/light mode and wallpaper. No more manually updating colors in 7 different config files.
+
+### Inspiration
+
+This setup is inspired by [Omarchy](https://github.com/basecamp/omarchy). Windot attempts to recreate that same polished, cohesive developer experience — but for those of us stuck on Windows.
+
+### Author
+
+Created by [Yannick Herrero](https://github.com/YannickHerrero) as a personal configuration backup and reference. Feel free to use anything you find useful.
 
 ## Tech Stack
 
-- **Window Manager**: [GlazeWM](https://github.com/glzr-io/glazewm) - Tiling window manager for Windows
-- **Status Bar**: [Zebar](https://github.com/glzr-io/zebar) - Custom React status bar with GlazeWM integration
-- **Terminal**: [WezTerm](https://wezfurlong.org/wezterm/) - GPU-accelerated terminal emulator
-- **Browser**: Firefox with custom userChrome.css styling
-- **Automation**: AutoHotkey v2 scripts for fuzzy-find launchers
-- **Utilities**: [PowerToys](https://github.com/microsoft/PowerToys) - Keyboard Manager remappings
-- **Editor**: Neovim with LazyVim configuration
-- **Shell**: Zsh with modular configuration
-
-## Repository Structure
-
-```
-windot/
-├── glzr/           # GlazeWM & Zebar configs
-├── install/        # Automated install scripts
-│   ├── windows/    # Windows apps via winget
-│   └── wsl/        # WSL packages via apt/scripts
-├── powertoys/      # PowerToys config (Keyboard Manager)
-├── scripts/        # AutoHotkey launchers
-│   ├── config/     # INI configuration files
-│   └── lib/        # Shared library functions
-├── standalone/     # Manual setup configs (Firefox)
-├── theme/          # Wallpapers
-├── wezterm/        # Terminal config
-└── wsl/            # WSL dotfiles (neovim, zsh)
-```
+| Component      | Tool                                                      | Description                                 |
+| -------------- | --------------------------------------------------------- | ------------------------------------------- |
+| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm)             | Tiling WM for Windows (i3/bspwm-like)       |
+| Status Bar     | [Zebar](https://github.com/glzr-io/zebar)                 | React-based bar with GlazeWM integration    |
+| Terminal       | [WezTerm](https://wezfurlong.org/wezterm/)                | GPU-accelerated, Lua-configurable           |
+| Launchers      | [AutoHotkey v2](https://www.autohotkey.com/)              | Fuzzy-find launchers and utilities          |
+| Editor         | [Neovim](https://neovim.io/)                              | Custom config with LSP, Copilot, treesitter |
+| Shell          | Zsh + [Zinit](https://github.com/zdharma-continuum/zinit) | Fast, modular configuration                 |
+| Prompt         | [Oh My Posh](https://ohmyposh.dev/)                       | Cross-platform prompt theming               |
+| Utilities      | [PowerToys](https://github.com/microsoft/PowerToys)       | Keyboard remappings                         |
 
 ## Features
 
-### Sync System
+### Cross-Platform Theme System
 
-Run `./sync.sh` from the repo root for an interactive fzf menu to sync configs:
+Themes are defined in TOML files with comprehensive color palettes:
 
-```bash
-./sync.sh
-# Select "all" to sync everything, or choose individual configs
+```toml
+[meta]
+name = "Catppuccin Mocha"
+id = "mocha"
+type = "dark"              # Sets Windows dark/light mode
+wallpaper = "catppuccin.png"
+
+[colors]
+background = "1e1e2e"
+foreground = "cdd6f4"
+# ... core UI colors
+
+[colors.terminal]
+# ANSI 16-color palette for terminals
+
+[colors.base16]
+# Base16 palette for Neovim syntax highlighting
+
+[apps.ohmyposh]
+# Semantic colors for shell prompt
+
+[apps.glazewm]
+border_focused = "b4befe"
 ```
 
-Individual sync scripts:
-- `glzr/sync.sh` - GlazeWM + Zebar to `~/.glzr/`
-- `wezterm/sync.sh` - WezTerm config to `~/.wezterm.lua`
-- `scripts/sync.sh` - AutoHotkey scripts to `~/scripts/`
-- `powertoys/sync.sh` - PowerToys config to `%LOCALAPPDATA%\Microsoft\PowerToys`
-- `theme/sync.sh` - Wallpapers to `~/Pictures/Wallpapers/`
-- `wsl/dotfiles/sync.sh` - .zshrc to `~/`
-- `wsl/neovim/sync.sh` - Neovim config to `~/.config/nvim/`
-- `wsl/zsh/sync.sh` - Zsh modules to `~/.zsh/`
+**Available themes:** Catppuccin (Mocha/Latte), Nord, Osaka Jade, Milk Matcha, Rose of Dune, Snow
 
-### Launchers
+**What gets updated:**
 
-All launchers are consolidated into a single `master.ahk` script with shared libraries. Uses Catppuccin Mocha theming and fuzzy-find filtering.
+- WezTerm colors (hot-reloads without restart)
+- Neovim base16 colorscheme
+- Oh My Posh prompt colors
+- OpenCode theme
+- GlazeWM window borders
+- Zebar CSS variables
+- Windows dark/light mode
+- Desktop wallpaper
 
-**Omakase Launcher (Win+Alt+Space)**
-- Meta-launcher providing access to all AHK utilities:
-  - Quick Launcher
-  - Wallpaper Selector
-  - Theme Switcher
-  - Help Window
-  - Amphetamine Toggle (shows current ON/OFF status)
+### AutoHotkey Launcher Suite
 
-**Terminal Launcher (Alt+Enter)**
-- Opens a new WezTerm terminal instance
+All launchers consolidated into `master.ahk` with shared libraries and Catppuccin theming.
 
-**Quick Launcher (Alt+Space)**
-- Unified launcher for websites, apps, folders, and terminal paths
-- Web apps open in Chrome app mode (Chrome, Vivaldi, Brave, Edge)
-- Terminal paths open in WezTerm (auto-scans `~/dev/`)
-- Obsidian vaults open directly
-- Folders open in File Explorer
-- Config split into `config/web.ini`, `apps.ini`, `folders.ini`, `terminal.ini`
+#### Quick Launcher `Alt+Space`
 
-**Wallpaper Selector** (via Omakase)
-- Fuzzy-find wallpaper selector with live preview
-- Scans `~/Pictures/Wallpapers/`
-- Sets desktop wallpaper instantly
+Unified fuzzy-find launcher for:
 
-**Theme Switcher** (via Omakase)
-- Switch between themes (Catppuccin Mocha, Latte, etc.)
-- Updates Windows dark/light mode, wallpaper, and app configs
+- **Websites** — Opens in Chrome app mode (supports Chrome, Vivaldi, Brave, Edge)
+- **Applications** — With Obsidian vault support
+- **Folders** — Opens in File Explorer
+- **Terminal paths** — Opens WezTerm in directory (auto-scans `~/dev/`)
+- **Firefox Web Apps** — Auto-discovered
+- **Clipboard URLs** — Paste and go
 
-**Amphetamine** (via Omakase)
-- Prevents screen lock with natural mouse movement
-- Toggle on/off with tooltip feedback
-- Enabled by default on startup
+Configuration split into `config/web.ini`, `apps.ini`, `folders.ini`, `terminal.ini`.
 
-**Help Window** (via Omakase)
-- Shows AutoHotkey and GlazeWM keyboard shortcuts
-- Displays amphetamine status (ON/OFF)
+#### Omakase Launcher `Win+Alt+Space`
+
+Meta-launcher providing access to all utilities:
+
+- Quick Launcher
+- Wallpaper Selector (fuzzy-find with live preview)
+- Theme Switcher (light themes marked 日, dark themes 月)
+- Help Window (shows all keybindings)
+- Amphetamine toggle (prevents screen lock, shows ON/OFF status)
+
+#### Terminal `Alt+Enter`
+
+Opens a new WezTerm instance.
 
 ### GlazeWM Configuration
 
 - **Gaps**: 12px uniform spacing
-- **Window Effects**: Catppuccin-themed borders
+- **Window effects**: Themed borders, transparency on unfocused windows
 - **Workspaces**: 1-9 with Alt+number keybinds
-- **Focus**: Alt+hjkl for vim-style navigation
-- **Reload**: Alt+Shift+R
+- **Navigation**: Alt+hjkl for vim-style focus movement
+- **Auto-starts**: Zebar and master.ahk on launch
+- **Smart rules**: Ignores Zebar, PowerToys, AHK launchers, PiP windows
 
 ### Zebar Status Bar
 
-Custom React-based status bar with:
-- GlazeWM workspace buttons
-- Active window title
-- CPU/Memory monitors (click to open Task Manager)
+Custom React-based status bar featuring:
+
+- GlazeWM workspace buttons (clickable)
+- Tiling direction toggle
 - Date/time display
-- Catppuccin Mocha theme
+- CPU/Memory usage monitors
+- Battery indicator
+- Binding mode display
+- Pause indicator
+
+### WSL Development Environment
+
+#### Neovim
+
+Custom configuration with:
+
+- LSP support for multiple languages
+- GitHub Copilot integration
+- Treesitter syntax highlighting
+- Telescope fuzzy finder
+- Base16 theme integration (syncs with system theme)
+
+#### Zsh
+
+Modular configuration with Zinit plugin manager:
+
+- `aliases.zsh` — Common shortcuts
+- `completions.zsh` — Enhanced tab completion
+- `functions.zsh` — Custom shell functions
+- `history.zsh` — Shared history settings
+- `tools.zsh` — Tool integrations (fzf, zoxide, etc.)
+- `fuzzy-dir.zsh` — Fuzzy directory navigation
+
+Modern CLI tools configured: `eza` (ls), `bat` (cat), `zoxide` (cd), `fzf`, `ripgrep`
 
 ### Firefox Customization
 
 Located in `standalone/firefox/` (requires manual setup):
 
-**userChrome.css**:
+**userChrome.css:**
+
 - Auto-hiding navbar (shows on hover)
 - Minimal tab design
 - Debloated toolbar
 
-**Installation**:
+**Installation:**
 
-1. Enable userchrome:
-   - In `about:config` set `toolkit.legacyUserProfileCustomizations.stylesheets` to `true`
+1. Enable userchrome in `about:config`:
+   - Set `toolkit.legacyUserProfileCustomizations.stylesheets` to `true`
 
 2. Enable compact mode:
-   - In `about:config` set `browser.compactmode.show` to `true`
-   - In the customize toolbar menu set density to compact
+   - Set `browser.compactmode.show` to `true` in `about:config`
+   - In customize toolbar menu, set density to compact
 
-3. Copy `userChrome.css` to the `chrome` directory in your Firefox profile. If there is no such directory, create it. If you're unsure what the path to your profile's directory is, you can find out by going to `about:profiles`.
+3. Copy `userChrome.css` to the `chrome` directory in your Firefox profile
+   - Find your profile path at `about:profiles`
 
-### WSL Dotfiles
+## Repository Structure
 
-**Neovim**: Full LazyVim configuration with:
-- LSP support
-- Catppuccin theme
-- Copilot integration
-- Custom keybindings
-
-**Zsh**: Modular configuration with:
-- Aliases
-- Completions
-- Custom functions
-- History settings
-- Tool integrations (fzf, zoxide)
-
-### Install Scripts
-
-Automated installation scripts for setting up a new machine:
-
-**Windows** (`install/windows/install.ps1`):
-- Interactive fzf menu (with fallback) to select scripts
-- Auto-installs WinGet if not available
-- Scripts:
-  - `browsers` - Firefox, Chrome, Brave
-  - `development` - VS Code, Git, WezTerm
-  - `fonts` - JetBrains Mono, Cascadia Code, Nerd Fonts
-  - `system-tools` - PowerToys, UniGetUI, AutoHotkey
-  - `wsl` - WSL2 + Ubuntu
-  - `window-management` - GlazeWM, Zebar
-  - `settings` - Windows appearance, taskbar, explorer, privacy tweaks
-
-**WSL** (`install/wsl/install.sh`):
-- Interactive fzf menu to select scripts
-- Scripts:
-  - `prerequisites` - build-essential, curl, git
-  - `shell` - zsh, oh-my-zsh, starship
-  - `utilities` - fzf, ripgrep, eza, bat, zoxide
-  - `dev-core` - neovim, tmux, docker
-  - `javascript` - nvm, node, bun, pnpm
-  - `lazy-tools` - lazygit, lazydocker
-  - `databases` - postgresql client
-  - `ai` - Claude Code CLI
-  - `misc` - additional tools
-
-### PowerToys
-
-Configuration for Microsoft PowerToys:
-- **Keyboard Manager**: Custom key remappings
-- Sync with `powertoys/sync.sh`
+```
+windot/
+├── glzr/              # GlazeWM & Zebar configs
+│   ├── glazewm/       # Window manager config
+│   └── zebar/         # Status bar (React + CSS)
+├── install/           # Automated install scripts
+│   ├── windows/       # PowerShell + WinGet
+│   └── wsl/           # Bash + apt/brew/cargo
+├── powertoys/         # PowerToys config (Keyboard Manager)
+├── scripts/           # AutoHotkey launchers
+│   ├── config/        # INI configuration files
+│   └── lib/           # Shared library functions
+├── standalone/        # Manual setup configs (Firefox)
+├── theme/             # Theme definitions & wallpapers
+│   ├── themes/        # TOML theme files
+│   └── walls/         # Wallpaper images
+├── wezterm/           # Terminal configuration
+└── wsl/               # WSL dotfiles
+    ├── dotfiles/      # Shell configs, theme scripts
+    ├── neovim/        # Neovim configuration
+    └── zsh/           # Zsh modules
+```
 
 ## Installation
 
 ### Option 1: Automated Install (Recommended)
 
-Run the install scripts to set up everything automatically:
+#### Windows
 
 ```powershell
-# From PowerShell (as Administrator for some packages)
+# Run from PowerShell (as Administrator for some packages)
 .\install\windows\install.ps1
-# Select "all" or choose specific categories
 ```
 
+Interactive fzf menu to select:
+
+- `browsers` — Firefox, Chrome, Brave
+- `development` — VS Code, Git, WezTerm
+- `fonts` — JetBrains Mono, Cascadia Code, Nerd Fonts
+- `system-tools` — PowerToys, UniGetUI, AutoHotkey
+- `wsl` — WSL2 + Ubuntu
+- `window-management` — GlazeWM, Zebar
+- `settings` — Windows appearance, taskbar, explorer, privacy tweaks
+
+#### WSL
+
 ```bash
-# From WSL (after Windows install)
+# Run from WSL
 ./install/wsl/install.sh
-# Select "all" or choose specific categories
 ```
+
+Interactive fzf menu to select:
+
+- `prerequisites` — build-essential, curl, git
+- `shell` — zsh, oh-my-zsh, starship
+- `utilities` — fzf, ripgrep, eza, bat, zoxide
+- `dev-core` — neovim, tmux, docker
+- `javascript` — nvm, node, bun, pnpm
+- `lazy-tools` — lazygit, lazydocker
+- `databases` — postgresql client
+- `ai` — Claude Code CLI
+- `misc` — additional tools
 
 ### Option 2: Manual Prerequisites
 
 If you prefer manual installation:
+
 - Windows 11
 - WSL2 with Ubuntu
 - [GlazeWM](https://github.com/glzr-io/glazewm)
@@ -209,67 +259,79 @@ If you prefer manual installation:
 - [AutoHotkey v2](https://www.autohotkey.com/)
 - Google Chrome (for web app launcher)
 
-### Setup
+### Syncing Configurations
 
-1. **Clone the repository (from WSL):**
-   ```bash
-   git clone <repo-url> ~/dev/windot
-   cd ~/dev/windot
-   ```
+```bash
+# From WSL, in the repo directory
+./sync.sh
+```
 
-2. **Run install scripts (optional):**
-   ```powershell
-   # Windows
-   .\install\windows\install.ps1
-   ```
-   ```bash
-   # WSL
-   ./install/wsl/install.sh
-   ```
+Interactive fzf menu with options:
 
-3. **Sync all configurations:**
-   ```bash
-   ./sync.sh
-   # Select "all" or choose specific configs
-   ```
+- `all` — Sync everything
+- Individual configs (glzr, wezterm, scripts, etc.)
 
-4. **Reload GlazeWM:**
-   Press `Alt+Shift+R`
+**Individual sync scripts:**
 
-5. **Start AutoHotkey scripts:**
-   Run `master.ahk` from `C:\Users\<username>\scripts\` (single script handles all launchers)
+| Script                 | Destination                              |
+| ---------------------- | ---------------------------------------- |
+| `glzr/sync.sh`         | `~/.glzr/`                               |
+| `wezterm/sync.sh`      | `~/.wezterm.lua`                         |
+| `scripts/sync.sh`      | `~/scripts/`                             |
+| `powertoys/sync.sh`    | `%LOCALAPPDATA%\Microsoft\PowerToys`     |
+| `theme/sync.sh`        | `~/Pictures/Wallpapers/` + theme INI     |
+| `wsl/dotfiles/sync.sh` | `~/` (.zshrc, .gitconfig, theme-scripts) |
+| `wsl/neovim/sync.sh`   | `~/.config/nvim/`                        |
+| `wsl/zsh/sync.sh`      | `~/.zsh/`                                |
+
+### Post-Install Setup
+
+1. **Reload GlazeWM:** `Alt+Shift+R`
+
+2. **Start AutoHotkey scripts:** Run `master.ahk` from `C:\Users\<username>\scripts\`
+
+3. **Set a theme:** Press `Win+Alt+Space` → Select "Theme Switcher"
 
 ### Troubleshooting
 
-**PowerShell scripts won't run**: If you get an error about execution policy, run PowerShell as Administrator and execute:
+**PowerShell scripts won't run:**
+
 ```powershell
+# Run PowerShell as Administrator
 Set-ExecutionPolicy RemoteSigned
 ```
 
+**Theme not applying to all apps:** Ensure `set-theme.sh` is in `~/.local/bin/` and executable.
+
 ## Keybindings
 
-### AutoHotkey Launchers
+### AutoHotkey
 
-| Hotkey | Action |
-|--------|--------|
-| Alt+Enter | New terminal |
-| Alt+Space | Quick launcher |
-| Win+Alt+Space | Omakase launcher (utilities menu) |
+| Hotkey          | Action                       |
+| --------------- | ---------------------------- |
+| `Alt+Enter`     | New terminal                 |
+| `Alt+Space`     | Quick launcher               |
+| `Win+Alt+Space` | Omakase launcher (utilities) |
 
 ### GlazeWM
 
-| Hotkey | Action |
-|--------|--------|
-| Alt+hjkl | Focus window |
-| Alt+1-9 | Switch workspace |
-| Alt+Shift+1-9 | Move window to workspace |
-| Alt+Shift+R | Reload GlazeWM |
+| Hotkey              | Action                   |
+| ------------------- | ------------------------ |
+| `Alt+h/j/k/l`       | Focus window (vim-style) |
+| `Alt+Shift+h/j/k/l` | Move window              |
+| `Alt+1-9`           | Switch workspace         |
+| `Alt+Shift+1-9`     | Move window to workspace |
+| `Alt+f`             | Toggle floating          |
+| `Alt+m`             | Toggle maximize          |
+| `Alt+Shift+q`       | Close window             |
+| `Alt+Shift+r`       | Reload config            |
 
 ## Notes
 
 - **Windows configs** sync to `C:\Users\<username>\`
 - **WSL configs** sync to the WSL home directory
 - **Firefox config** requires manual setup (see `standalone/firefox/`)
+- **Theme system** requires Python 3.11+ (for `tomllib`)
 - All launchers auto-detect installed applications
 
 ## Links
@@ -278,8 +340,9 @@ Set-ExecutionPolicy RemoteSigned
 - [Zebar Documentation](https://github.com/glzr-io/zebar)
 - [WezTerm Documentation](https://wezfurlong.org/wezterm/)
 - [AutoHotkey v2 Docs](https://www.autohotkey.com/docs/v2/)
-- [LazyVim Documentation](https://www.lazyvim.org/)
+- [Neovim Documentation](https://neovim.io/doc/)
+- [Oh My Posh Documentation](https://ohmyposh.dev/)
 
-## License
+## Feedback
 
-Personal configuration - use as you wish!
+If you have questions or suggestions, feel free to [open an issue](https://github.com/YannickHerrero/windot/issues).
