@@ -1,22 +1,24 @@
 // ==UserScript==
 // @name           Leader Key Navigation
-// @description    Space as leader key for vim-like navigation
+// @description    Ctrl+A as leader key for vim-like navigation
 // @author         windot
-// @version        1.1
+// @version        1.2
 // @include        main
 // ==/UserScript==
 
 (function() {
   'use strict';
   
-  const LEADER_KEY = ' ';  // Space
+  // Leader key is now Ctrl+A (won't interfere with typing)
+  const LEADER_KEY = 'a';
+  const LEADER_MODIFIER = 'ctrlKey';
   
   let leaderActive = false;
   let statusIndicator = null;
   
   // Key bindings with descriptions
   const leaderBindings = {
-    ' ': { fn: () => showTabPicker(), desc: 'tab picker' },
+    'a': { fn: () => showTabPicker(), desc: 'tab picker' },
     'b': { fn: () => showTabPicker(), desc: 'tab picker' },
     't': { fn: () => {
       gBrowser.selectedTab = gBrowser.addTrustedTab('about:newtab');
@@ -56,7 +58,7 @@
   
   // Build help text from bindings
   function getHelpText() {
-    return `SPC tabs    t new     w close   x close
+    return `C-a tabs    t new     w close   x close
 j   prev    k next    h back    l forward
 o   url     / find    r reload
 d   dup     p pin     m mute    u undo
@@ -278,30 +280,6 @@ d   dup     p pin     m mute    u undo
     searchInput.focus();
   }
   
-  // Check if we're in an editable element
-  function isEditable(element) {
-    if (!element) return false;
-    
-    const tagName = element.tagName?.toLowerCase();
-    if (tagName === 'input' || tagName === 'textarea') {
-      return true;
-    }
-    
-    if (element.isContentEditable) {
-      return true;
-    }
-    
-    if (element.closest('[contenteditable="true"]')) {
-      return true;
-    }
-    
-    if (element.closest('#urlbar-input') || element.id === 'urlbar-input') {
-      return true;
-    }
-    
-    return false;
-  }
-  
   // Main keyboard handler
   function handleKeydown(event) {
     const target = event.target;
@@ -324,19 +302,12 @@ d   dup     p pin     m mute    u undo
       }
     }
     
-    // Skip if in editable element (but still process leader if already active)
-    if (isEditable(target) && !leaderActive) {
+    // Check for leader key (Ctrl+A)
+    if (!leaderActive && event.key.toLowerCase() === LEADER_KEY && event[LEADER_MODIFIER] && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      activateLeader();
       return;
-    }
-    
-    // Check for leader key
-    if (!leaderActive && event.key === LEADER_KEY && !event.ctrlKey && !event.altKey && !event.metaKey) {
-      if (!isEditable(target)) {
-        event.preventDefault();
-        event.stopPropagation();
-        activateLeader();
-        return;
-      }
     }
     
     // Handle leader commands
@@ -370,5 +341,5 @@ d   dup     p pin     m mute    u undo
     }
   });
   
-  console.log('Leader key navigation loaded. Press Space to see commands.');
+  console.log('Leader key navigation loaded. Press Ctrl+A to see commands.');
 })();
