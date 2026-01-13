@@ -38,6 +38,15 @@ cp "$SCRIPT_DIR/scripts/install-hooks.sh" "$HOME_DIR/.local/bin/install-hooks.sh
 chmod +x "$HOME_DIR/.local/bin/install-hooks.sh"
 echo "  - install-hooks.sh"
 
+# Notes CLI
+NOTES_SRC="$SCRIPT_DIR/../bin"
+ln -sf "$NOTES_SRC/notes" "$HOME_DIR/.local/bin/notes"
+mkdir -p "$HOME_DIR/.local/bin/notes.d"
+for file in "$NOTES_SRC/notes.d/"*.sh; do
+    ln -sf "$file" "$HOME_DIR/.local/bin/notes.d/"
+done
+echo "  - notes CLI"
+
 # Git hooks scripts
 mkdir -p "$HOME_DIR/.local/bin/git-hooks"
 cp "$SCRIPT_DIR/scripts/git-hooks/"*.sh "$HOME_DIR/.local/bin/git-hooks/"

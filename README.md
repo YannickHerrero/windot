@@ -137,6 +137,32 @@ Custom React-based status bar featuring:
 
 ### WSL Development Environment
 
+#### Notes CLI
+
+A command-line tool for managing notes with automatic git synchronization. Every operation pulls before and commits/pushes after, keeping notes in sync across machines.
+
+```bash
+notes                              # Open notes folder in nvim
+notes add "Remember to buy milk"   # Quick note to inbox
+notes add p my-project             # Create 1-projects/my-project.md
+notes add a work meetings          # Create 2-areas/work/meetings.md  
+notes add p doku ideas feature     # Create 1-projects/doku/ideas/feature.md
+notes list                         # Tree view of all notes
+notes search                       # Fuzzy search filenames with fzf
+notes search --deep TODO           # Search inside file contents
+notes help                         # Show usage
+```
+
+**Folder shortcuts:**
+| Short | Long | Path |
+|-------|------|------|
+| `p` | `projects` | `1-projects/` |
+| `a` | `areas` | `2-areas/` |
+| `r` | `resources` | `3-resources/` |
+| `arc` | `archive` | `4-archive/` |
+
+**Requirements:** git (with remote), nvim, tree, fzf, ripgrep
+
 #### Neovim
 
 Custom configuration with:
