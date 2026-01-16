@@ -1,5 +1,6 @@
 #!/bin/bash
-# Install prerequisites: Homebrew, Go, Rust
+# Install prerequisites: mise (polyglot tool manager)
+# Mise will handle: node, pnpm, bun, go, rust, and CLI tools
 
 set -e
 
@@ -13,33 +14,35 @@ is_installed() {
 
 echo "Installing prerequisites..."
 
-# Homebrew
-if is_installed brew; then
-    echo -e "${YELLOW}[SKIP]${NC} Homebrew already installed"
+# mise
+if is_installed mise; then
+    echo -e "${YELLOW}[SKIP]${NC} mise already installed"
 else
-    echo -e "${GREEN}[INSTALL]${NC} Homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo -e "${GREEN}[INSTALL]${NC} mise"
+    curl https://mise.run | sh
     # Add to PATH for current session
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Go
-if is_installed go; then
-    echo -e "${YELLOW}[SKIP]${NC} Go already installed"
-else
-    echo -e "${GREEN}[INSTALL]${NC} Go"
-    sudo apt update
-    sudo apt install -y golang-go
+# Ensure mise config is in place
+MISE_CONFIG_DIR="$HOME/.config/mise"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+WINDOT_MISE_CONFIG="$SCRIPT_DIR/../../../wsl/config/mise/config.toml"
+
+if [ -f "$WINDOT_MISE_CONFIG" ]; then
+    mkdir -p "$MISE_CONFIG_DIR"
+    if [ ! -L "$MISE_CONFIG_DIR/config.toml" ] || [ "$(readlink -f "$MISE_CONFIG_DIR/config.toml")" != "$(readlink -f "$WINDOT_MISE_CONFIG")" ]; then
+        ln -sf "$(readlink -f "$WINDOT_MISE_CONFIG")" "$MISE_CONFIG_DIR/config.toml"
+        echo -e "${GREEN}[LINK]${NC} mise config symlinked"
+    else
+        echo -e "${YELLOW}[SKIP]${NC} mise config already linked"
+    fi
 fi
 
-# Rust
-if is_installed cargo; then
-    echo -e "${YELLOW}[SKIP]${NC} Rust already installed"
-else
-    echo -e "${GREEN}[INSTALL]${NC} Rust"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    # Add to PATH for current session
-    source "$HOME/.cargo/env"
-fi
+# Install all tools defined in mise config
+echo -e "${GREEN}[INSTALL]${NC} Installing mise tools (this may take a while)..."
+mise install --yes
 
 echo "Prerequisites installation complete!"
+echo "Installed tools via mise:"
+mise list

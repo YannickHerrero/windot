@@ -1,0 +1,36 @@
+# Mise configuration for WSL environment
+# This file is symlinked to ~/.config/mise/config.toml
+
+[tools]
+# JavaScript ecosystem
+node = "lts"
+pnpm = "latest"
+bun = "latest"
+
+# Languages/runtimes
+go = "latest"
+rust = "latest"
+
+# Git tools
+delta = "latest"
+lazygit = "latest"
+
+# File managers & TUI tools  
+lazydocker = "latest"
+yazi = "latest"
+# Note: lazysql is installed via go install in 07-misc.sh (not in mise registry)
+
+# CLI utilities (replacing apt/cargo installs)
+zoxide = "latest"
+fzf = "latest"
+ripgrep = "latest"
+bat = "latest"
+eza = "latest"
+fd = "latest"
+
+# Editor - pinned to specific version
+neovim = "0.11.3"
+
+[settings]
+# Automatically install tools when entering a directory with a mise config
+auto_install = true
