@@ -18,3 +18,6 @@ zinit cdreplay -q
 for config in ~/.zsh/*.zsh; do
     source "$config"
 done
+
+# Source local/private config (not tracked by git)
+[[ -f ~/.zsh/local.zsh ]] && source ~/.zsh/local.zsh

@@ -6,6 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cp "$SCRIPT_DIR/.zshrc" ~/.zshrc
 
 # Create zsh config directory and copy all config files
+# Note: this copies repo files only, preserving ~/.zsh/local.zsh (private, not tracked)
 mkdir -p ~/.zsh
 cp "$SCRIPT_DIR"/*.zsh ~/.zsh/
 
