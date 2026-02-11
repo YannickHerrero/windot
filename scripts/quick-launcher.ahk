@@ -51,6 +51,14 @@ LoadLauncherConfig() {
     ; Scan Firefox Web Apps folder
     LoadFirefoxApps()
 
+    ; Add MTools entry (dev server with auto-start)
+    items.Push({
+        name: "MTools",
+        displayName: "[Dev] MTools",
+        url: "http://localhost:5175/tasks",
+        type: "devapp"
+    })
+
     ; Add clipboard entry as searchable item
     items.Push({
         name: "Paste from Clipboard",
@@ -391,6 +399,8 @@ LaunchSelectedItem() {
                 LaunchFolder(item.path)
             case "terminal":
                 LaunchTerminal(item)
+            case "devapp":
+                LaunchMTools()
         }
     }
 }
@@ -485,6 +495,11 @@ LaunchWebsite(url) {
 
     ; Launch browser in app mode
     Run('"' chromeExe '" --app="' url '"')
+}
+
+; Launch MTools in a new Firefox window
+LaunchMTools() {
+    Run('firefox.exe -new-window "http://localhost:5175/tasks"')
 }
 
 ; Launch URL from clipboard in app mode
