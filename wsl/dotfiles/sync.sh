@@ -16,6 +16,9 @@ echo "Syncing dotfiles to $HOME_DIR..."
 cp "$SCRIPT_DIR/.gitconfig" "$HOME_DIR/.gitconfig"
 echo "  - .gitconfig"
 
+cp "$SCRIPT_DIR/.tmux.conf" "$HOME_DIR/.tmux.conf"
+echo "  - .tmux.conf"
+
 mkdir -p "$HOME_DIR/.config/ohmyposh"
 cp "$SCRIPT_DIR/ohmyposh/"* "$HOME_DIR/.config/ohmyposh/"
 echo "  - ohmyposh config"

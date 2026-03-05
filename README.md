@@ -306,7 +306,7 @@ Interactive fzf menu with options:
 | `scripts/sync.sh`      | `~/scripts/`                             |
 | `powertoys/sync.sh`    | `%LOCALAPPDATA%\Microsoft\PowerToys`     |
 | `theme/sync.sh`        | `~/Pictures/Wallpapers/` + theme INI     |
-| `wsl/dotfiles/sync.sh` | `~/` (.zshrc, .gitconfig, theme-scripts) |
+| `wsl/dotfiles/sync.sh` | `~/` (.gitconfig, .tmux.conf, theme-scripts, helper scripts) |
 | `wsl/neovim/sync.sh`   | `~/.config/nvim/`                        |
 | `wsl/zsh/sync.sh`      | `~/.zsh/`                                |
 
