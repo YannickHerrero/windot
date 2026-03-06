@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEV_DIR="${1:-$HOME/dev}"
+
+if ! command -v tmux >/dev/null 2>&1; then
+    echo "tmux-sessionizer requires tmux."
+    exit 1
+fi
+
+if ! command -v fzf >/dev/null 2>&1; then
+    echo "tmux-sessionizer requires fzf."
+    exit 1
+fi
+
+if [ ! -d "$DEV_DIR" ]; then
+    echo "Directory not found: $DEV_DIR"
+    exit 1
+fi
+
+if command -v eza >/dev/null 2>&1; then
+    PREVIEW_CMD='eza --tree --level=1 --color=always "'$DEV_DIR'/{}"'
+else
+    PREVIEW_CMD='ls -la "'$DEV_DIR'/{}"'
+fi
+
+dir=$(find "$DEV_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | \
+    fzf --preview "$PREVIEW_CMD" \
+        --bind 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up')
+
+if [ -z "${dir:-}" ]; then
+    exit 0
+fi
+
+project_path="$DEV_DIR/$dir"
+session_name=$(printf '%s' "$dir" | tr ' .:' '___')
+
+if tmux has-session -t "$session_name" 2>/dev/null; then
+    if [ -n "${TMUX:-}" ]; then
+        tmux switch-client -t "$session_name"
+    else
+        tmux attach-session -t "$session_name"
+    fi
+    exit 0
+fi
+
+tmux new-session -d -s "$session_name" -c "$project_path" -n "nvim"
+tmux new-window -t "$session_name" -c "$project_path" -n "opencode"
+tmux new-window -t "$session_name" -c "$project_path" -n "run"
+tmux new-window -t "$session_name" -c "$project_path" -n "zsh"
+tmux split-window -h -t "$session_name:run"
+tmux select-window -t "$session_name:nvim"
+
+if [ -n "${TMUX:-}" ]; then
+    tmux switch-client -t "$session_name"
+else
+    tmux attach-session -t "$session_name"
+fi

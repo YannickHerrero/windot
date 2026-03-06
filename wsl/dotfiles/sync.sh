@@ -51,11 +51,12 @@ echo "  - install-hooks.sh"
 NOTES_SRC="$SCRIPT_DIR/../bin"
 ln -sf "$NOTES_SRC/notes" "$HOME_DIR/.local/bin/notes"
 ln -sf "$NOTES_SRC/tmux-help" "$HOME_DIR/.local/bin/tmux-help"
+ln -sf "$NOTES_SRC/tmux-sessionizer" "$HOME_DIR/.local/bin/tmux-sessionizer"
 mkdir -p "$HOME_DIR/.local/bin/notes.d"
 for file in "$NOTES_SRC/notes.d/"*.sh; do
     ln -sf "$file" "$HOME_DIR/.local/bin/notes.d/"
 done
-echo "  - notes CLI + tmux-help"
+echo "  - notes CLI + tmux tools"
 
 # Git hooks scripts
 mkdir -p "$HOME_DIR/.local/bin/git-hooks"

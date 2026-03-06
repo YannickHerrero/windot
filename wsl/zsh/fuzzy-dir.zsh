@@ -9,6 +9,11 @@ f() {
     fi
 }
 
+# Tmux sessionizer - select a project and create/attach session
+fs() {
+    tmux-sessionizer "$@"
+}
+
 # Fuzzy directory finder - cd into selected directory (top-level Windows home folders only)
 fw() {
     local win_user=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
