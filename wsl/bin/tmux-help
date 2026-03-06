@@ -15,6 +15,7 @@ PANES
   Ctrl+a h / j / k / l   resize pane (repeatable for a short delay)
 
 GENERAL
+  Ctrl+a m               toggle zoom for focused pane
   Ctrl+a r               reload ~/.tmux.conf
   Ctrl+a [               enter copy mode (vi keys)
 
