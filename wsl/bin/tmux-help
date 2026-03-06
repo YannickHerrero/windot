@@ -1,26 +1,57 @@
 #!/usr/bin/env bash
 
-cat << 'EOF'
-tmux shortcuts (windot)
+set -euo pipefail
 
-PREFIX
-  Ctrl+a                 tmux prefix
-  Ctrl+a Ctrl+a          send literal prefix
+QUERY="${*:-}"
 
-PANES
-  Ctrl+a -               split horizontal (new pane below)
-  Ctrl+a |               split vertical (new pane right)
-  Ctrl+h / Ctrl+j / Ctrl+k / Ctrl+l
-                          move focus between panes
-  Ctrl+a h / j / k / l   resize pane (repeatable for a short delay)
-
-GENERAL
-  Ctrl+a m               toggle zoom for focused pane
-  Ctrl+a r               reload ~/.tmux.conf
-  Ctrl+a [               enter copy mode (vi keys)
-
-PLUGINS (TPM)
-  Ctrl+a I               install plugins
-  Ctrl+a U               update plugins
-  Ctrl+a Alt+u           uninstall removed plugins
+if ! command -v fzf >/dev/null 2>&1; then
+    cat << 'EOF'
+tmux-help requires fzf.
+Install fzf, then run tmux-help again.
 EOF
+    exit 1
+fi
+
+SHORTCUTS=$(cat << 'EOF'
+Prefix | Ctrl+a | tmux prefix | prefix leader
+Send Prefix | Ctrl+a Ctrl+a | send literal prefix to running app | prefix leader nested
+Split Horizontal | Ctrl+a - | split pane horizontally (new pane below) | split pane layout
+Split Vertical | Ctrl+a Shift+\\ | split pane vertically (new pane right) | split pane layout
+Move Left | Ctrl+h | focus left pane | pane navigation
+Move Down | Ctrl+j | focus lower pane | pane navigation
+Move Up | Ctrl+k | focus upper pane | pane navigation
+Move Right | Ctrl+l | focus right pane | pane navigation
+Resize Left | Ctrl+a h | resize focused pane left by 3 cells (repeatable) | resize pane size
+Resize Down | Ctrl+a j | resize focused pane down by 3 cells (repeatable) | resize pane size
+Resize Up | Ctrl+a k | resize focused pane up by 3 cells (repeatable) | resize pane size
+Resize Right | Ctrl+a l | resize focused pane right by 3 cells (repeatable) | resize pane size
+Zoom Pane | Ctrl+a m | toggle fullscreen/zoom on focused pane | zoom fullscreen maximize
+Reload Config | Ctrl+a r | reload ~/.tmux.conf | config reload source
+Copy Mode | Ctrl+a [ | enter copy mode (vi keys) | copy selection scrollback
+Rename Window | Ctrl+a , | rename current window | window rename title
+Rename Session | Ctrl+a $ | rename current session | session rename title
+New Window | Ctrl+a c | create a new window | window create
+Next Window | Ctrl+a n | switch to next window | window navigation
+Previous Window | Ctrl+a p | switch to previous window | window navigation
+Window List | Ctrl+a w | open interactive window list | window chooser list
+Kill Pane | Ctrl+a x | close current pane (with confirmation) | pane close kill
+Kill Window | Ctrl+a & | close current window (with confirmation) | window close kill
+Install Plugins | Ctrl+a I | install TPM plugins | tpm plugins
+Update Plugins | Ctrl+a U | update TPM plugins | tpm plugins
+Remove Plugins | Ctrl+a Alt+u | remove TPM plugins no longer listed | tpm plugins
+EOF
+)
+
+printf '%s\n' "$SHORTCUTS" \
+    | fzf \
+        --ansi \
+        --delimiter='|' \
+        --with-nth=1,2,3 \
+        --layout=reverse \
+        --height=80% \
+        --border \
+        --prompt='tmux> ' \
+        --query="$QUERY" \
+        --header='Search tmux shortcuts by name, key, or tags' \
+        --preview='echo {} | tr "|" "\n" | sed "s/^ *//"' \
+        --preview-window='right:55%:wrap'
