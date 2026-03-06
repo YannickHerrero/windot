@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+cat << 'EOF'
+tmux shortcuts (windot)
+
+PREFIX
+  Ctrl+a                 tmux prefix
+  Ctrl+a Ctrl+a          send literal prefix
+
+PANES
+  Ctrl+a -               split horizontal (new pane below)
+  Ctrl+a |               split vertical (new pane right)
+  Ctrl+h / Ctrl+j / Ctrl+k / Ctrl+l
+                          move focus between panes
+  Ctrl+a h / j / k / l   resize pane (repeatable for a short delay)
+
+GENERAL
+  Ctrl+a r               reload ~/.tmux.conf
+  Ctrl+a [               enter copy mode (vi keys)
+
+PLUGINS (TPM)
+  Ctrl+a I               install plugins
+  Ctrl+a U               update plugins
+  Ctrl+a Alt+u           uninstall removed plugins
+EOF
