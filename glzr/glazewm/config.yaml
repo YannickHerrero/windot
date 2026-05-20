@@ -156,6 +156,8 @@ window_rules:
       # AutoHotkey launchers
       - window_title: { equals: 'Website Launcher' }
       - window_title: { equals: 'Terminal Launcher' }
+      # wmenu launcher
+      - window_process: { equals: 'wmenu' }
       # Teams call windows
       #- window_process: { equals: 'ms-teams' }
       #  window_title: { regex: '.*Call.*|.*Meeting.*' }
