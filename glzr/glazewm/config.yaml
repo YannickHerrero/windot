@@ -3,15 +3,13 @@ general:
   # script or launching another application.
   # Example: The below command launches Zebar.
   startup_commands: [
-    'shell-exec zebar',
-    'shell-exec C:/Users/%WIN_USER%/scripts/master.ahk'
+    'shell-exec zebar'
   ]
 
   # Commands to run just before the WM is shutdown.
   # Example: The below command kills Zebar.
   shutdown_commands: [
-    'shell-exec taskkill /IM zebar.exe /F',
-    'shell-exec taskkill /IM AutoHotkey64.exe /F'
+    'shell-exec taskkill /IM zebar.exe /F'
   ]
 
   # Commands to run after the WM config is reloaded.
