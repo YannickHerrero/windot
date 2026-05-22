@@ -154,8 +154,10 @@ window_rules:
       # AutoHotkey launchers
       - window_title: { equals: 'Website Launcher' }
       - window_title: { equals: 'Terminal Launcher' }
-      # wmenu launcher
+      # wmenu launcher (the settings window is titled 'wmenu — settings'
+      # and should be tiled normally, so match the popup title explicitly).
       - window_process: { equals: 'wmenu' }
+        window_title: { equals: 'wmenu' }
       # Teams call windows
       #- window_process: { equals: 'ms-teams' }
       #  window_title: { regex: '.*Call.*|.*Meeting.*' }
