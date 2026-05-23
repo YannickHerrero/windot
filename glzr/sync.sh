@@ -1,5 +1,7 @@
 #!/bin/bash
-# Syncs glzr configs from this repo to Windows locations
+# Syncs glzr configs from this repo to Windows locations.
+# wbar replaced zebar; wbar manages its own config at %APPDATA%\wbar\
+# and isn't tracked here.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -11,22 +13,13 @@ if [ -z "$WIN_USER" ]; then
 fi
 
 WIN_GLZR="/mnt/c/Users/$WIN_USER/.glzr"
-ZEBAR_DOWNLOADS="/mnt/c/Users/$WIN_USER/AppData/Roaming/zebar/downloads"
 
 echo "Syncing glzr configs..."
 
 # Sync glazewm config (substitute %WIN_USER% placeholder)
+mkdir -p "$WIN_GLZR/glazewm"
 sed "s/%WIN_USER%/$WIN_USER/g" "$SCRIPT_DIR/glazewm/config.yaml" > "$WIN_GLZR/glazewm/config.yaml"
 echo "  - glazewm/config.yaml -> $WIN_GLZR/glazewm/"
-
-# Sync zebar settings
-cp "$SCRIPT_DIR/zebar/settings.json" "$WIN_GLZR/zebar/settings.json"
-echo "  - zebar/settings.json -> $WIN_GLZR/zebar/"
-
-# Sync glzr-io.starter pack to marketplace downloads location
-mkdir -p "$ZEBAR_DOWNLOADS/glzr-io.starter@0.0.0"
-cp -r "$SCRIPT_DIR/zebar/glzr-io.starter/." "$ZEBAR_DOWNLOADS/glzr-io.starter@0.0.0/"
-echo "  - zebar/glzr-io.starter/ -> $ZEBAR_DOWNLOADS/glzr-io.starter@0.0.0/"
 
 echo ""
 echo "Done! Reload GlazeWM with Alt+Shift+R"
