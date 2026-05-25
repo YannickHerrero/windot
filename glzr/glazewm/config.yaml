@@ -2,12 +2,14 @@ general:
   # Commands to run when the WM has started. This is useful for running a
   # script or launching another application.
   startup_commands: [
-    'shell-exec wbar'
+    'shell-exec wbar',
+    'shell-exec kanata --cfg %APPDATA%\kanata\kanata.kbd'
   ]
 
   # Commands to run just before the WM is shutdown.
   shutdown_commands: [
-    'shell-exec taskkill /IM wbar.exe /F'
+    'shell-exec taskkill /IM wbar.exe /F',
+    'shell-exec taskkill /IM kanata_windows_tty_winIOv2_x64.exe /F'
   ]
 
   # Commands to run after the WM config is reloaded.
