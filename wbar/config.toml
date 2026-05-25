@@ -13,7 +13,7 @@ size = 12.0
 theme = "Stone"
 
 [layout]
-left   = ["workspaces", "tiling"]
+left   = ["tiling", "workspaces"]
 center = ["clock"]
 right  = ["battery", "cpu", "memory"]
 
@@ -26,7 +26,7 @@ show_empty = false
 # stream so updates land within one repaint of Alt+R (toggle-tiling-direction).
 [widgets.tiling]
 type = "tiling-direction"
-# Default glyphs are '═' / '║'; uncomment to override.
+# Defaults are '-' / '|'; uncomment to override.
 # horizontal = "─"
 # vertical   = "│"
 
