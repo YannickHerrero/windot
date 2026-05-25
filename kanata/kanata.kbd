@@ -1,4 +1,7 @@
-;; CapsLock as Ctrl when held, Esc when tapped. That's the whole config.
+;; CapsLock as Ctrl when held, Esc when tapped. Holding either Shift
+;; while pressing CapsLock emits a real Caps Lock keypress (toggles
+;; Windows' Caps Lock state) — the only way to reach Caps Lock now
+;; that the bare key is remapped.
 ;;
 ;; Launched by GlazeWM's startup_commands. Uses the WinIOv2 backend (no
 ;; admin, no interception driver) — scoop's `kanata` shim points at the
@@ -9,13 +12,24 @@
 )
 
 (defsrc
-  caps
+  caps lsft rsft
 )
 
 (defalias
   cap (tap-hold 200 200 esc lctl)
+  ;; Shift keys still emit shift, but ALSO push the `shifted` layer onto
+  ;; the active stack while held. That layer rewrites `caps` to emit a
+  ;; literal Caps Lock keypress. The defchordsv2 alternative would have
+  ;; added a chord-timeout latency to every standalone caps tap, so
+  ;; we use a layer overlay instead — zero latency on caps-alone.
+  lsft+ (multi lsft (layer-while-held shifted))
+  rsft+ (multi rsft (layer-while-held shifted))
 )
 
 (deflayer base
-  @cap
+  @cap @lsft+ @rsft+
+)
+
+(deflayer shifted
+  caps _    _
 )
