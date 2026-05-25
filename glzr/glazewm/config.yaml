@@ -4,7 +4,7 @@ general:
   startup_commands: [
     'shell-exec wbar',
     'shell-exec wmenu',
-    'shell-exec kanata --cfg %APPDATA%\kanata\kanata.kbd'
+    'shell-exec wscript %APPDATA%\kanata\launch.vbs'
   ]
 
   # Commands to run just before the WM is shutdown.

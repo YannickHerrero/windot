@@ -1,9 +1,13 @@
-# Sync kanata config to %APPDATA%\kanata\kanata.kbd
+# Sync kanata config + hidden-launch wrapper to %APPDATA%\kanata\
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Source = Join-Path $ScriptDir "kanata.kbd"
-$Dest = Join-Path $env:APPDATA "kanata\kanata.kbd"
+$DestDir = Join-Path $env:APPDATA "kanata"
 
-New-Item -Path (Split-Path $Dest -Parent) -ItemType Directory -Force | Out-Null
-Copy-Item -Path $Source -Destination $Dest -Force
-Write-Host "[OK] kanata config -> $Dest" -ForegroundColor Green
+New-Item -Path $DestDir -ItemType Directory -Force | Out-Null
+
+foreach ($name in 'kanata.kbd', 'launch.vbs') {
+    $src = Join-Path $ScriptDir $name
+    $dst = Join-Path $DestDir $name
+    Copy-Item -Path $src -Destination $dst -Force
+    Write-Host "[OK] $name -> $dst" -ForegroundColor Green
+}
