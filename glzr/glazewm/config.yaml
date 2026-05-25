@@ -138,27 +138,10 @@ window_rules:
       # Ignores picture-in-picture windows for browsers.
       - window_title: { regex: '[Pp]icture.in.[Pp]icture' }
         window_class: { regex: 'Chrome_WidgetWin_1|MozillaDialogClass' }
-      # Ignore rules for various 3rd-party apps.
-      - window_process: { equals: 'PowerToys' }
-        window_class: { regex: 'HwndWrapper\[PowerToys\.PowerAccent.*?\]' }
-      - window_process: { equals: 'PowerToys' }
-        window_title: { regex: '.*? - Peek' }
-      # PowerToys Run launcher (Command Palette)
-      - window_process: { equals: 'Microsoft.CmdPal.UI' }
-      - window_process: { equals: 'Lively' }
-        window_class: { regex: 'HwndWrapper' }
-      # AutoHotkey launchers
-      - window_title: { equals: 'Website Launcher' }
-      - window_title: { equals: 'Terminal Launcher' }
-      # wmenu launcher (the settings window is titled 'wmenu — settings'
+      # wmenu launcher popup (the settings window is titled 'wmenu — settings'
       # and should be tiled normally, so match the popup title explicitly).
       - window_process: { equals: 'wmenu' }
         window_title: { equals: 'wmenu' }
-      # Teams call windows
-      #- window_process: { equals: 'ms-teams' }
-      #  window_title: { regex: '.*Call.*|.*Meeting.*' }
-      #- window_process: { equals: 'Teams' }
-      #  window_title: { regex: '.*Call.*|.*Meeting.*' }
       - window_process: { equals: 'EXCEL' }
         window_class: { not_regex: 'XLMAIN' }
       - window_process: { equals: 'WINWORD' }
