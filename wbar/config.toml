@@ -21,14 +21,14 @@ right  = ["battery", "cpu", "memory"]
 type = "glazewm"
 show_empty = false
 
-# Current GlazeWM tiling direction (horizontal/vertical split). Polled via
-# a tiny PowerShell wrapper that shells out to `GlazeWM query
-# tiling-direction`. 1-second cadence keeps the latency tolerable after
-# Alt+R (toggle-tiling-direction) without burning CPU.
+# Current GlazeWM tiling direction (horizontal/vertical split). Native
+# widget — wbar subscribes to GlazeWM's tiling_direction_changed event
+# stream so updates land within one repaint of Alt+R (toggle-tiling-direction).
 [widgets.tiling]
-type = "command"
-command = "powershell -NoProfile -ExecutionPolicy Bypass -File %APPDATA%\\wbar\\tiling-direction.ps1"
-interval_seconds = 1
+type = "tiling-direction"
+# Default glyphs are '═' / '║'; uncomment to override.
+# horizontal = "─"
+# vertical   = "│"
 
 [widgets.clock]
 type = "clock"

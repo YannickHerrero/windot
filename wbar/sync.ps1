@@ -1,13 +1,9 @@
-# Sync wbar config and helper scripts to %APPDATA%\wbar\
+# Sync wbar config to %APPDATA%\wbar\config.toml
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$DestDir = Join-Path $env:APPDATA "wbar"
+$Source = Join-Path $ScriptDir "config.toml"
+$Dest = Join-Path $env:APPDATA "wbar\config.toml"
 
-New-Item -Path $DestDir -ItemType Directory -Force | Out-Null
-
-foreach ($name in 'config.toml', 'tiling-direction.ps1') {
-    $src = Join-Path $ScriptDir $name
-    $dst = Join-Path $DestDir $name
-    Copy-Item -Path $src -Destination $dst -Force
-    Write-Host "[OK] $name -> $dst" -ForegroundColor Green
-}
+New-Item -Path (Split-Path $Dest -Parent) -ItemType Directory -Force | Out-Null
+Copy-Item -Path $Source -Destination $Dest -Force
+Write-Host "[OK] wbar config -> $Dest" -ForegroundColor Green
