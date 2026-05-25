@@ -1,0 +1,23 @@
+theme = "Stone"
+amphetamine_enabled = false
+settings_borderless = false
+
+[daemon]
+autostart = true
+start_minimized = true
+
+[launcher]
+hotkey = "Alt+Space"
+omakase_hotkey = "Alt+Super+Space"
+scan_interval_minutes = 5
+extra_dirs = []
+
+[[bindings]]
+label = "New terminal"
+key = "Alt+Enter"
+action = { type = "focus_or_launch", exe_path = "wezterm-gui.exe" }
+
+[[bindings]]
+label = "File explorer"
+key = "Alt+e"
+action = { type = "focus_or_launch", exe_path = "Explorer.exe" }
