@@ -2,21 +2,22 @@
 
 $ErrorActionPreference = "Stop"
 
-function Install-WingetPackage {
-    param([string]$PackageId, [string]$Name)
+function Install-ScoopPackage {
+    param([string]$Package, [string]$Name)
 
-    $installed = winget list --id $PackageId 2>$null | Select-String $PackageId
+    $appName = ($Package -split '/')[-1]
+    $installed = scoop list 2>$null | Where-Object { $_.Name -eq $appName }
     if ($installed) {
         Write-Host "[SKIP] $Name already installed" -ForegroundColor Yellow
     } else {
         Write-Host "[INSTALL] $Name" -ForegroundColor Green
-        winget install --id $PackageId --source winget --accept-source-agreements --accept-package-agreements
+        scoop install $Package
     }
 }
 
 Write-Host "Installing browsers..."
 
-Install-WingetPackage -PackageId "Google.Chrome" -Name "Google Chrome"
-Install-WingetPackage -PackageId "Mozilla.Firefox" -Name "Firefox"
+Install-ScoopPackage -Package "extras/googlechrome" -Name "Google Chrome"
+Install-ScoopPackage -Package "extras/firefox" -Name "Firefox"
 
 Write-Host "Browsers installation complete!"
