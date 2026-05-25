@@ -1,44 +1,42 @@
-# Windows Install Script - select and run install scripts via fzf
+# Windows Install Script - select and run install scripts via numbered menu
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RunDir = Join-Path $ScriptDir "run"
 
-# Check and install WinGet if not available
-# Reference: https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
-function Ensure-WinGet {
-    $wingetAvailable = Get-Command winget -ErrorAction SilentlyContinue
-    if ($wingetAvailable) {
-        Write-Host "[OK] WinGet is already installed" -ForegroundColor Green
-        return
+# Install Scoop in user mode (no admin) if not present, then ensure required buckets.
+function Ensure-Scoop {
+    $scoopAvailable = Get-Command scoop -ErrorAction SilentlyContinue
+    if (-not $scoopAvailable) {
+        Write-Host "[INSTALL] Scoop not found, installing..." -ForegroundColor Yellow
+        Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+        Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+        $scoopAvailable = Get-Command scoop -ErrorAction SilentlyContinue
+        if (-not $scoopAvailable) {
+            Write-Host "[ERROR] Scoop installation failed" -ForegroundColor Red
+            exit 1
+        }
     }
+    Write-Host "[OK] Scoop is available" -ForegroundColor Green
 
-    Write-Host "[INSTALL] WinGet not found, installing..." -ForegroundColor Yellow
-    $progressPreference = 'silentlyContinue'
-
-    Write-Host "  Installing NuGet package provider..."
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force:$true | Out-Null
-
-    Write-Host "  Installing Microsoft.WinGet.Client module..."
-    Install-Module Microsoft.WinGet.Client -Force:$true -Confirm:$false | Out-Null
-
-    Write-Host "  Importing Microsoft.WinGet.Client module..."
-    Import-Module Microsoft.WinGet.Client
-
-    Write-Host "  Repairing WinGet package manager..."
-    Repair-WinGetPackageManager -Force:$true -Latest
-
-    # Verify installation
-    $wingetAvailable = Get-Command winget -ErrorAction SilentlyContinue
-    if ($wingetAvailable) {
-        Write-Host "[OK] WinGet installed successfully" -ForegroundColor Green
-    } else {
-        Write-Host "[ERROR] WinGet installation failed" -ForegroundColor Red
-        exit 1
+    # Buckets needed by the run/*.ps1 scripts.
+    $buckets = @{
+        'extras'     = 'https://github.com/ScoopInstaller/Extras'
+        'nerd-fonts' = 'https://github.com/matthewjberger/scoop-nerd-fonts'
+        'yannick'    = 'https://github.com/YannickHerrero/scoop-bucket'
+    }
+    $existing = scoop bucket list 2>$null | ForEach-Object { $_.Name }
+    foreach ($name in $buckets.Keys) {
+        if ($existing -notcontains $name) {
+            Write-Host "[ADD] scoop bucket $name" -ForegroundColor Yellow
+            scoop bucket add $name $buckets[$name]
+        } else {
+            Write-Host "[OK] bucket $name already added" -ForegroundColor Green
+        }
     }
 }
 
-# Ensure WinGet is available before proceeding
-Ensure-WinGet
+Ensure-Scoop
 Write-Host ""
 
 # Find all install scripts in run directory
