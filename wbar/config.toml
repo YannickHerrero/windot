@@ -13,13 +13,22 @@ size = 12.0
 theme = "Stone"
 
 [layout]
-left   = ["workspaces"]
+left   = ["workspaces", "tiling"]
 center = ["clock"]
 right  = ["battery", "cpu", "memory"]
 
 [widgets.workspaces]
 type = "glazewm"
 show_empty = false
+
+# Current GlazeWM tiling direction (horizontal/vertical split). Polled via
+# a tiny PowerShell wrapper that shells out to `GlazeWM query
+# tiling-direction`. 1-second cadence keeps the latency tolerable after
+# Alt+R (toggle-tiling-direction) without burning CPU.
+[widgets.tiling]
+type = "command"
+command = "powershell -NoProfile -ExecutionPolicy Bypass -File %APPDATA%\\wbar\\tiling-direction.ps1"
+interval_seconds = 1
 
 [widgets.clock]
 type = "clock"
