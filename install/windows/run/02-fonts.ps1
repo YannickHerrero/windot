@@ -5,6 +5,10 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Installing fonts..."
 
-Install-Package -ScoopPackage "nerd-fonts/JetBrainsMono-NF" -WingetId "DEVCOM.JetBrainsMonoNerdFont" -Name "JetBrainsMono Nerd Font"
+Install-Package `
+    -ScoopPackage "nerd-fonts/JetBrainsMono-NF" `
+    -WingetId "DEVCOM.JetBrainsMonoNerdFont" `
+    -FileExists "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont*.ttf" `
+    -Name "JetBrainsMono Nerd Font"
 
 Write-Host "Fonts installation complete!"

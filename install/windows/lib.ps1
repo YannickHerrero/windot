@@ -16,6 +16,13 @@ function Install-Package {
         [Parameter()]
         [string]$WingetId,
 
+        # Optional path (supports globs). If anything matches, skip the
+        # install. Use this for things like fonts where winget detection is
+        # unreliable and the install would otherwise collide with a locked
+        # file already in place.
+        [Parameter()]
+        [string]$FileExists,
+
         # Human label for log output.
         [Parameter(Mandatory=$true)]
         [string]$Name
@@ -34,6 +41,14 @@ function Install-Package {
             Select-String -SimpleMatch $WingetId -Quiet
         if ($wingetMatch) {
             Write-Host "[SKIP] $Name already installed via winget ($WingetId)" -ForegroundColor Yellow
+            return
+        }
+    }
+
+    if ($FileExists) {
+        $matched = Get-ChildItem -Path $FileExists -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($matched) {
+            Write-Host "[SKIP] $Name already present at $($matched.FullName)" -ForegroundColor Yellow
             return
         }
     }
