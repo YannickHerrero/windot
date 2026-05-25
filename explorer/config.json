@@ -1,0 +1,18 @@
+{
+  "theme": "sage",
+  "density": "comfortable",
+  "sidebar_open": true,
+  "show_hidden": false,
+  "vim_navigation": true,
+  "show_preview": true,
+  "hide_titlebar": true,
+  "last_path": null,
+  "pinned_folders": [],
+  "tags": [
+    { "id": "t-red", "name": "Urgent", "color": "#C44536" },
+    { "id": "t-org", "name": "Review", "color": "#D97706" },
+    { "id": "t-grn", "name": "Done", "color": "#3F6B3A" },
+    { "id": "t-blu", "name": "Reference", "color": "#4A6B8A" }
+  ],
+  "file_tags": []
+}
