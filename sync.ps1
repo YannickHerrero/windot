@@ -1,10 +1,13 @@
 # Root sync script - select and run sync scripts via numbered menu
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SelfPath = $MyInvocation.MyCommand.Path
+$ScriptDir = Split-Path -Parent $SelfPath
 
-# Find all sync.ps1 scripts in subdirectories (excluding this root script)
+# Find all sync.ps1 scripts in subdirectories (excluding this root script).
+# $MyInvocation inside Where-Object rebinds to the script block, so capture
+# the self path to a local first and compare against that.
 $SyncScripts = Get-ChildItem -Path $ScriptDir -Recurse -Filter "sync.ps1" |
-    Where-Object { $_.FullName -ne $MyInvocation.MyCommand.Path } |
+    Where-Object { $_.FullName -ne $SelfPath } |
     Sort-Object FullName
 
 if ($SyncScripts.Count -eq 0) {
