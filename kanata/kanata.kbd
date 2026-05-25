@@ -1,0 +1,21 @@
+;; CapsLock as Ctrl when held, Esc when tapped. That's the whole config.
+;;
+;; Launched by GlazeWM's startup_commands. Uses the WinIOv2 backend (no
+;; admin, no interception driver) — scoop's `kanata` shim points at the
+;; `kanata_windows_tty_winIOv2_x64.exe` binary by default.
+
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc
+  caps
+)
+
+(defalias
+  cap (tap-hold 200 200 esc lctl)
+)
+
+(deflayer base
+  @cap
+)
