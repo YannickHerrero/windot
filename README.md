@@ -87,6 +87,20 @@ configs into their expected locations:
 | `CapsLock` (tap)          | Esc (kanata) |
 | `CapsLock` (hold)         | Ctrl (kanata) |
 
+## Theming
+
+`Alt+Super+Space → Theme → <Name>` switches everything at once:
+
+| Target | What changes |
+| ------ | ------------ |
+| wmenu | own palette (instant) |
+| wbar | palette (via 127.0.0.1:17128 IPC, instant) |
+| Explorer | `theme` field in config.json — backend file watcher picks it up live |
+| GlazeWM | focused / unfocused border colors in your `config.yaml` — orchestrator finds the `# wmenu-theme-focused` / `# wmenu-theme-unfocused` sentinel comments, rewrites just those lines, then triggers `wm-reload-config` |
+| Windows | dark/light mode toggle + DWM accent color (Ink = dark, everything else = light), broadcast via `WM_SETTINGCHANGE` so running apps repaint without log-out |
+
+The five themes available are **Paper**, **Stone**, **Sage**, **Clay**, **Ink** — they share names across wmenu, wbar, and Explorer. Each leg fails independently; if (say) wbar isn't running, the rest still update.
+
 ## Notes
 
 - **No admin.** Scoop runs in user mode. GlazeWM's MSI is extracted by
