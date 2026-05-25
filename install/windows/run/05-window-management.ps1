@@ -5,6 +5,6 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Installing window management tools..."
 
-Install-Package -ScoopPackage "extras/glazewm" -Name "GlazeWM"
+Install-Package -ScoopPackage "extras/glazewm" -WingetId "glzr-io.glazewm" -Name "GlazeWM"
 
 Write-Host "Window management installation complete!"

@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Installing browsers..."
 
-Install-Package -ScoopPackage "extras/googlechrome" -Name "Google Chrome"
-Install-Package -ScoopPackage "extras/firefox" -Name "Firefox"
+Install-Package -ScoopPackage "extras/googlechrome" -WingetId "Google.Chrome" -Name "Google Chrome"
+Install-Package -ScoopPackage "extras/firefox" -WingetId "Mozilla.Firefox" -Name "Firefox"
 
 Write-Host "Browsers installation complete!"

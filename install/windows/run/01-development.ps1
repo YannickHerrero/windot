@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Installing development tools..."
 
-Install-Package -ScoopPackage "extras/wezterm" -Name "WezTerm"
-Install-Package -ScoopPackage "extras/bruno" -Name "Bruno"
+Install-Package -ScoopPackage "extras/wezterm" -WingetId "wez.wezterm" -Name "WezTerm"
+Install-Package -ScoopPackage "extras/bruno" -WingetId "Bruno.Bruno" -Name "Bruno"
 
 Write-Host "Development tools installation complete!"

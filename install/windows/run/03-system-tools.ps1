@@ -5,6 +5,6 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Installing system tools..."
 
-Install-Package -ScoopPackage "extras/kanata" -Name "Kanata"
+Install-Package -ScoopPackage "extras/kanata" -WingetId "jtroo.kanata" -Name "Kanata"
 
 Write-Host "System tools installation complete!"
