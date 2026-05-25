@@ -13,9 +13,16 @@ size = 12.0
 theme = "Stone"
 
 [layout]
-left   = ["tiling", "workspaces"]
+left   = ["tiling", "gap", "workspaces"]
 center = ["clock"]
 right  = ["battery", "cpu", "memory"]
+
+# Extra breathing room between the tiling-direction pill and the
+# workspaces row. The global REGION_ITEM_SPACING (4px) feels too tight
+# between these two semantically distinct surfaces.
+[widgets.gap]
+type = "spacer"
+width = 8
 
 [widgets.workspaces]
 type = "glazewm"
