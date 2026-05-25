@@ -68,6 +68,7 @@ configs into their expected locations:
 | wbar    | `%APPDATA%\wbar\config.toml`                          |
 | Explorer | `%APPDATA%\com.ilios.explorer\config.json`           |
 | kanata  | `%APPDATA%\kanata\kanata.kbd`                         |
+| Wallpapers | `%APPDATA%\wmenu\wallpapers\<theme>.png`           |
 
 ## Keybinds
 
@@ -97,6 +98,8 @@ configs into their expected locations:
 | wbar | palette (via 127.0.0.1:17128 IPC, instant) |
 | Explorer | `theme` field in config.json — backend file watcher picks it up live |
 | GlazeWM | focused / unfocused border colors in your `config.yaml` — orchestrator finds the `# wmenu-theme-focused` / `# wmenu-theme-unfocused` sentinel comments, rewrites just those lines, then triggers `wm-reload-config` |
+| WezTerm | writes a complete `config.colors` table to `~/.wezterm-colors.lua` — your main `.wezterm.lua` already adds this path to `add_to_config_reload_watch_list`, so the terminal hot-reloads with no restart |
+| Wallpaper | calls `SystemParametersInfoW SPI_SETDESKWALLPAPER` on `%APPDATA%\wmenu\wallpapers\<theme>.png` — drop your own image at any of the 5 slots to replace the shipped one |
 | Windows | dark/light mode toggle + DWM accent color (Ink = dark, everything else = light), broadcast via `WM_SETTINGCHANGE` so running apps repaint without log-out |
 
 The five themes available are **Paper**, **Stone**, **Sage**, **Clay**, **Ink** — they share names across wmenu, wbar, and Explorer. Each leg fails independently; if (say) wbar isn't running, the rest still update.
@@ -122,7 +125,8 @@ windot/
 ├── wmenu/               wmenu config + sync.ps1
 ├── wbar/                wbar config + sync.ps1
 ├── explorer/            Explorer config + sync.ps1
-├── kanata/              kanata.kbd + sync.ps1
+├── kanata/              kanata.kbd + launch.vbs + sync.ps1
+├── wallpapers/          5 per-theme PNGs + sync.ps1
 ├── standalone/firefox/  manual-apply Firefox tweaks
 ├── install/windows/     install.ps1 + run/*.ps1 steps
 └── sync.ps1             top-level sync dispatcher
