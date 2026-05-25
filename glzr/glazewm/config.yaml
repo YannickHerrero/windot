@@ -67,7 +67,9 @@ window_effects:
     border:
       enabled: true
       # Paper theme accent (terracotta) — matches wmenu / wbar Paper.
-      color: '#b5593a'
+      # The trailing comment is load-bearing: wmenu's ecosystem theme
+      # switcher finds this exact sentinel to know which line to rewrite.
+      color: '#b5593a' # wmenu-theme-focused
 
     # Remove the title bar from the window's frame. Note that this can
     # cause rendering issues for some applications.
@@ -93,7 +95,8 @@ window_effects:
     border:
       enabled: true
       # Paper theme ink_faint — softer companion to the focused border.
-      color: '#a49580'
+      # Load-bearing sentinel comment — see focused_window above.
+      color: '#a49580' # wmenu-theme-unfocused
     hide_title_bar:
       enabled: false
     corner_style:
