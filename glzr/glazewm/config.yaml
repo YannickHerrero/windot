@@ -66,7 +66,8 @@ window_effects:
     # ** Exclusive to Windows 11 due to API limitations.
     border:
       enabled: true
-      color: '#b4befe'
+      # Paper theme accent (terracotta) — matches wmenu / wbar Paper.
+      color: '#b5593a'
 
     # Remove the title bar from the window's frame. Note that this can
     # cause rendering issues for some applications.
@@ -91,7 +92,8 @@ window_effects:
   other_windows:
     border:
       enabled: true
-      color: '#7f849c'
+      # Paper theme ink_faint — softer companion to the focused border.
+      color: '#a49580'
     hide_title_bar:
       enabled: false
     corner_style:
