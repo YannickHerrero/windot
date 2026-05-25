@@ -38,14 +38,14 @@ tick_seconds = 1
 [widgets.memory]
 type = "sysinfo"
 metric = "ram"
-icon = ""
+icon = ""
 format = "{value:>3.0}%"
 interval_seconds = 2
 
 [widgets.cpu]
 type = "sysinfo"
 metric = "cpu"
-icon = ""
+icon = ""
 format = "{value:>3.0}%"
 interval_seconds = 2
 warn_above = 85.0
@@ -53,7 +53,7 @@ warn_above = 85.0
 [widgets.battery]
 type = "sysinfo"
 metric = "battery"
-icon = ""
+icon = ""
 charging_icon = "󰂄"
 format = "{value:>3.0}%"
 interval_seconds = 10
