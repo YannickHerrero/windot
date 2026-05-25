@@ -25,12 +25,12 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 scoop install git
 git clone https://github.com/YannickHerrero/windot.git
 cd windot
-.\install\windows\install.ps1
+.\install.ps1
 ```
 
-`install.ps1` bootstraps scoop, adds the `extras`, `nerd-fonts`, and
-`yannick` buckets, then shows a numbered menu of steps. Pick `0` for
-everything.
+`install.ps1` (a root wrapper around `install\windows\install.ps1`)
+bootstraps scoop, adds the `extras`, `nerd-fonts`, and `yannick`
+buckets, then shows a numbered menu of steps. Pick `0` for everything.
 
 ### What gets installed
 
