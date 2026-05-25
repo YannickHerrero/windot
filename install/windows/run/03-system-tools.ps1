@@ -1,23 +1,22 @@
-# Install system tools: PowerToys, UniGetUI, AutoHotkey
+# Install system tools: kanata (CapsLock -> Ctrl/Esc remap)
 
 $ErrorActionPreference = "Stop"
 
-function Install-WingetPackage {
-    param([string]$PackageId, [string]$Name)
+function Install-ScoopPackage {
+    param([string]$Package, [string]$Name)
 
-    $installed = winget list --id $PackageId 2>$null | Select-String $PackageId
+    $appName = ($Package -split '/')[-1]
+    $installed = scoop list 2>$null | Where-Object { $_.Name -eq $appName }
     if ($installed) {
         Write-Host "[SKIP] $Name already installed" -ForegroundColor Yellow
     } else {
         Write-Host "[INSTALL] $Name" -ForegroundColor Green
-        winget install --id $PackageId --source winget --accept-source-agreements --accept-package-agreements
+        scoop install $Package
     }
 }
 
 Write-Host "Installing system tools..."
 
-Install-WingetPackage -PackageId "Microsoft.PowerToys" -Name "PowerToys"
-Install-WingetPackage -PackageId "MartiCliment.UniGetUI" -Name "UniGetUI"
-Install-WingetPackage -PackageId "AutoHotkey.AutoHotkey" -Name "AutoHotkey"
+Install-ScoopPackage -Package "extras/kanata" -Name "Kanata"
 
 Write-Host "System tools installation complete!"
