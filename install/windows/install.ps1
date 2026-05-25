@@ -60,29 +60,20 @@ foreach ($script in $InstallScripts) {
     $ScriptMap[$displayName] = $script.FullName
 }
 
-# Check if fzf is available
-$fzfAvailable = Get-Command fzf -ErrorAction SilentlyContinue
+Write-Host ""
+Write-Host "Select install script:" -ForegroundColor Cyan
+Write-Host ""
+for ($i = 0; $i -lt $Options.Count; $i++) {
+    Write-Host "  [$i] $($Options[$i])"
+}
+Write-Host ""
+$choice = Read-Host "Enter number"
 
-if ($fzfAvailable) {
-    # Use fzf for selection
-    $Selection = $Options | fzf --prompt="Select install script: " --height=40% --reverse
+if ($choice -match '^\d+$' -and [int]$choice -lt $Options.Count) {
+    $Selection = $Options[[int]$choice]
 } else {
-    # Fallback to simple menu
-    Write-Host ""
-    Write-Host "Select install script:" -ForegroundColor Cyan
-    Write-Host ""
-    for ($i = 0; $i -lt $Options.Count; $i++) {
-        Write-Host "  [$i] $($Options[$i])"
-    }
-    Write-Host ""
-    $choice = Read-Host "Enter number"
-
-    if ($choice -match '^\d+$' -and [int]$choice -lt $Options.Count) {
-        $Selection = $Options[[int]$choice]
-    } else {
-        Write-Host "Invalid selection."
-        exit 1
-    }
+    Write-Host "Invalid selection."
+    exit 1
 }
 
 if (-not $Selection) {
