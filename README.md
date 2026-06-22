@@ -13,6 +13,7 @@ admin, installs in a few minutes from a fresh box.
 | File manager  | [Explorer](https://github.com/YannickHerrero/Explorer)                |
 | Keyboard remap | [kanata](https://github.com/jtroo/kanata) (CapsLock → Ctrl/Esc)      |
 | Terminal      | [WezTerm](https://wezfurlong.org/wezterm/)                            |
+| Terminal (WSL) | [Windows Terminal](https://aka.ms/terminal) (matches WezTerm look)   |
 | Package manager | [Scoop](https://scoop.sh) (user-mode, no admin)                     |
 
 ## Install
@@ -69,6 +70,12 @@ configs into their expected locations:
 | Explorer | `%APPDATA%\com.ilios.explorer\config.json`           |
 | kanata  | `%APPDATA%\kanata\kanata.kbd`                         |
 | Wallpapers | `%APPDATA%\wmenu\wallpapers\<theme>.png`           |
+| Windows Terminal | `%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json` (merged) |
+
+Windows Terminal's `sync.ps1` **merges** rather than overwrites: curated keys
+(font, keybindings, default profile, `profiles.defaults`) are overlaid onto the
+live file, while WT-generated profiles and the live dynamic color scheme are
+preserved.
 
 ## Keybinds
 
@@ -99,6 +106,7 @@ configs into their expected locations:
 | Explorer | `theme` field in config.json — backend file watcher picks it up live |
 | GlazeWM | focused / unfocused border colors in your `config.yaml` — orchestrator finds the `# wmenu-theme-focused` / `# wmenu-theme-unfocused` sentinel comments, rewrites just those lines, then triggers `wm-reload-config` |
 | WezTerm | writes a complete `config.colors` table to `~/.wezterm-colors.lua` — your main `.wezterm.lua` already adds this path to `add_to_config_reload_watch_list`, so the terminal hot-reloads with no restart |
+| Windows Terminal | has no Lua hot-reload; a bridge translates `~/.wezterm-colors.lua` into the `wezterm-omakase` scheme inside `settings.json` (WT live-reloads). wmenu can call `windows-terminal/theme-sync.ps1` natively on Windows; or run `windows-terminal/theme-sync.sh` from WSL (add `--watch` to resync on every theme switch) |
 | Wallpaper | calls `SystemParametersInfoW SPI_SETDESKWALLPAPER` on `%APPDATA%\wmenu\wallpapers\<theme>.png` — drop your own image at any of the 5 slots to replace the shipped one |
 | Windows | dark/light mode toggle + DWM accent color (Ink = dark, everything else = light), broadcast via `WM_SETTINGCHANGE` so running apps repaint without log-out |
 
@@ -122,6 +130,7 @@ The five themes available are **Paper**, **Stone**, **Sage**, **Clay**, **Ink** 
 windot/
 ├── glzr/glazewm/        GlazeWM config + sync.ps1
 ├── wezterm/             WezTerm config + sync.ps1
+├── windows-terminal/    Windows Terminal settings.json + sync.ps1 + theme-sync.{ps1,sh}
 ├── wmenu/               wmenu config + sync.ps1
 ├── wbar/                wbar config + sync.ps1
 ├── explorer/            Explorer config + sync.ps1
