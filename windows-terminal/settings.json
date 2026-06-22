@@ -1,0 +1,90 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": [],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{e12c8d48-e562-5ee8-9f77-12125ca820b9}",
+    "keybindings": [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        },
+        {
+            "id": null,
+            "keys": "alt+enter"
+        }
+    ],
+    "newTabMenu": [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": {
+        "defaults": {
+            "font": {
+                "face": "JetBrainsMono Nerd Font Mono",
+                "size": 14
+            },
+            "colorScheme": "wezterm-omakase",
+            "cursorShape": "bar",
+            "useAcrylic": true,
+            "opacity": 25,
+            "padding": "8"
+        },
+        "list": [
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Invite de commandes"
+            },
+            {
+                "guid": "{e12c8d48-e562-5ee8-9f77-12125ca820b9}",
+                "hidden": false,
+                "name": "Debian",
+                "source": "Microsoft.WSL"
+            }
+        ]
+    },
+    "schemes": [
+        {
+            "name": "wezterm-omakase",
+            "foreground": "#2d3338",
+            "background": "#e6e8ea",
+            "cursorColor": "#4a6b8a",
+            "selectionBackground": "#d3d7db",
+            "black": "#2d3338",
+            "red": "#b33f3f",
+            "green": "#3f7a5c",
+            "yellow": "#b88235",
+            "blue": "#4a6b8a",
+            "purple": "#4a6b8a",
+            "cyan": "#5f6972",
+            "white": "#9ba3ab",
+            "brightBlack": "#5f6972",
+            "brightRed": "#b33f3f",
+            "brightGreen": "#3f7a5c",
+            "brightYellow": "#b88235",
+            "brightBlue": "#4a6b8a",
+            "brightPurple": "#4a6b8a",
+            "brightCyan": "#5f6972",
+            "brightWhite": "#d3d7db"
+        }
+    ],
+    "themes": []
+}
