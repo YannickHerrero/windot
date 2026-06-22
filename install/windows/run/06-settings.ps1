@@ -16,9 +16,9 @@ Write-Host "[SET] Dark mode for apps" -ForegroundColor Green
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0
 Write-Host "[SET] Dark mode for system" -ForegroundColor Green
 
-# Disable transparency effects
-Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Value 0
-Write-Host "[SET] Disabled transparency effects" -ForegroundColor Green
+# Enable transparency effects (required for Windows Terminal acrylic/blur)
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Value 1
+Write-Host "[SET] Enabled transparency effects" -ForegroundColor Green
 
 # ============================================================
 # TASKBAR
