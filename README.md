@@ -107,7 +107,7 @@ preserved.
 | GlazeWM | focused / unfocused border colors in your `config.yaml` — orchestrator finds the `# wmenu-theme-focused` / `# wmenu-theme-unfocused` sentinel comments, rewrites just those lines, then triggers `wm-reload-config` |
 | WezTerm | writes a complete `config.colors` table to `~/.wezterm-colors.lua` — your main `.wezterm.lua` already adds this path to `add_to_config_reload_watch_list`, so the terminal hot-reloads with no restart |
 | Windows Terminal | has no Lua hot-reload; a bridge translates `~/.wezterm-colors.lua` into the `wezterm-omakase` scheme inside `settings.json` (WT live-reloads). wmenu can call `windows-terminal/theme-sync.ps1` natively on Windows; or run `windows-terminal/theme-sync.sh` from WSL (add `--watch` to resync on every theme switch) |
-| Wallpaper | calls `SystemParametersInfoW SPI_SETDESKWALLPAPER` on `%APPDATA%\wmenu\wallpapers\<theme>.png` — drop your own image at any of the 5 slots to replace the shipped one |
+| Wallpaper | calls `SystemParametersInfoW SPI_SETDESKWALLPAPER` on a random `%APPDATA%\wmenu\wallpapers\<theme>-*.png` from that theme's pool, then re-randomizes every `wallpaper_rotation_minutes` (default 30, `0` = off) — drop your own images in any `<theme>-N.png` slot |
 | Windows | dark/light mode toggle + DWM accent color (Ink = dark, everything else = light), broadcast via `WM_SETTINGCHANGE` so running apps repaint without log-out |
 
 The five themes available are **Paper**, **Stone**, **Sage**, **Clay**, **Ink** — they share names across wmenu, wbar, and Explorer. Each leg fails independently; if (say) wbar isn't running, the rest still update.
