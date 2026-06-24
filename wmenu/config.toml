@@ -1,6 +1,9 @@
 theme = "Stone"
 amphetamine_enabled = false
 settings_borderless = false
+# Minutes between desktop-wallpaper re-randomizations within the active
+# theme's pool. 0 disables rotation (wallpaper still changes on theme switch).
+wallpaper_rotation_minutes = 30
 
 [daemon]
 autostart = true
