@@ -37,7 +37,7 @@
             "colorScheme": "wezterm-omakase",
             "cursorShape": "bar",
             "useAcrylic": true,
-            "opacity": 25,
+            "opacity": 75,
             "padding": "8"
         },
         "list": [
